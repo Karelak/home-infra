@@ -1,0 +1,56 @@
+services:
+  db:
+    image: "mariadb:latest"
+    hostname: db
+    restart: unless-stopped
+    command: "--transaction-isolation=READ-COMMITTED --binlog-format=ROW"
+    env_file: stack.env
+    environment:
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+    volumes:
+      - "db:/var/lib/mysql"
+    networks:
+      - wordpress
+    expose:
+      - "3306"
+  redis:
+    image: "redis:latest"
+    restart: unless-stopped
+    hostname: redis
+    expose:
+      - 6379
+    volumes:
+      - "redis:/data"
+    networks:
+      - wordpress
+  wordpress:
+    image: "wordpress:latest"
+    hostname: sanser
+    restart: unless-stopped
+    depends_on:
+      - db
+      - redis
+    env_file: stack.env
+    environment:
+      WORDPRESS_DB_HOST: "db:3306"
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_REDIS_HOST', 'redis');
+        define('WP_REDIS_PORT', 6379);
+    volumes:
+      - "wordpress:/var/www/html"
+    networks:
+      - wordpress
+      - user-bridge
+    expose:
+      - "80"
+volumes:
+  db:
+  wordpress:
+  redis:
+networks:
+  wordpress:
+  user-bridge:
+    external: true
