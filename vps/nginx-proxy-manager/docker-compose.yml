@@ -14,9 +14,9 @@ services:
     environment:
       DB_POSTGRES_HOST: postgres
       DB_POSTGRES_PORT: "5432"
-      DB_POSTGRES_USER: "${PG_USER}"
+      DB_POSTGRES_USER: nginx
       DB_POSTGRES_PASSWORD: "${PG_PASSWORD}"
-      DB_POSTGRES_NAME: "${PG_DB}"
+      DB_POSTGRES_NAME: nginx
     networks:
       - user-bridge
       - nginx
