@@ -1,0 +1,12 @@
+services:
+  watchtower:
+    image: nickfedor/watchtower:latest
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/London
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_UPDATE_ON_START=true
+      - WATCHTOWER_INCLUDE_STOPPED=false
+      - WATCHTOWER_POLL_INTERVAL=21600
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock

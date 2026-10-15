@@ -1,0 +1,70 @@
+networks:
+  n8n:
+volumes:
+  n8n:
+  postgres:
+  redis:
+services:
+  redis:
+    image: "redis:latest"
+    restart: unless-stopped
+    hostname: redis
+    expose:
+      - 6379
+    volumes:
+      - "redis:/data"
+    networks:
+      - n8n
+  postgres:
+    image: "postgres:15-alpine"
+    hostname: postgres
+    restart: unless-stopped
+    environment:
+      - "POSTGRES_USER=${PG_USER}"
+      - "POSTGRES_PASSWORD=${PG_PASSWORD}"
+      - "POSTGRES_DB=${PG_DB}"
+    volumes:
+      - "postgres:/var/lib/postgresql/data"
+    env_file:
+      - stack.env
+    expose:
+      - 5432
+    networks:
+      - n8n
+  n8n:
+    hostname: n8n
+    image: "docker.n8n.io/n8nio/n8n:latest"
+    restart: unless-stopped
+    ports:
+      - 5678:5678
+    env_file: stack.env
+    environment:
+      - N8N_PROTOCOL=https
+      - NODE_ENV=production
+      - GENERIC_TIMEZONE=Europe/London
+      - N8N_RUNNERS_MODE=external
+      - N8N_NATIVE_PYTHON_RUNNER=true
+      - N8N_RUNNERS_BROKER_LISTEN_ADDRESS=0.0.0.0
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+      - N8N_BLOCK_ENV_ACCESS_IN_NODE=true
+      - N8N_GIT_NODE_DISABLE_BARE_REPOS=true
+      - N8N_SKIP_AUTH_ON_OAUTH_CALLBACK=false
+      - N8N_PROXY_HOPS=1
+      - DB_TYPE=postgresdb
+      - N8N_MIGRATE_FS_STORAGE_PATH=true
+    volumes:
+      - "n8n:/home/node/.n8n"
+    labels:
+      - docker-volume-backup.stop-during-backup=n8n
+    networks:
+      - n8n
+  task-runners:
+    image: "n8nio/runners:latest"
+    env_file: stack.env
+    restart: unless-stopped
+    networks:
+      - n8n
+    environment:
+      - "N8N_RUNNERS_TASK_BROKER_URI=http://n8n:5679"
+    depends_on:
+      - n8n
