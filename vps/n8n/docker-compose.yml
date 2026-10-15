@@ -1,6 +1,4 @@
 networks:
-  user-bridge:
-    external: true
   n8n:
 volumes:
   n8n:
@@ -59,7 +57,6 @@ services:
     labels:
       - docker-volume-backup.stop-during-backup=n8n
     networks:
-      - user-bridge
       - n8n
   task-runners:
     image: "n8nio/runners:latest"
@@ -71,13 +68,3 @@ services:
       - "N8N_RUNNERS_TASK_BROKER_URI=http://n8n:5679"
     depends_on:
       - n8n
-# ts pulls so much storage holy shit
-# backup:
-#   image: 'offen/docker-volume-backup:latest'
-#   env_file: stack.env
-#   volumes:
-#     - 'postgres:/backup/postgres:ro'
-#     - 'n8n:/backup/n8n:ro'
-#   restart: always
-#   networks:
-#     - user-bridge

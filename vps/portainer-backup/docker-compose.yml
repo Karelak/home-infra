@@ -1,15 +1,10 @@
 volumes:
   portainer_data:
     external: true
-networks:
-  user-bridge:
-    external: true
 services:
   backup:
     image: "offen/docker-volume-backup:latest"
     env_file: stack.env
-    networks:
-      - user-bridge
     volumes:
       - "portainer_data:/backup/portainer:ro"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"

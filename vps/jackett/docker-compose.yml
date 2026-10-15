@@ -22,12 +22,9 @@ services:
     ports:
       - 9117:9117
     networks:
-      - user-bridge
       - jackett
 networks:
   jackett:
-  user-bridge:
-    external: true
 volumes:
   jackett:
   flaresolverr:

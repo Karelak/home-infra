@@ -1,8 +1,5 @@
 volumes:
   twitch-miner:
-networks:
-  user-bridge:
-    external: true
 services:
   kaarel:
     image: "rdavidoff/twitch-channel-points-miner-v2:latest"
@@ -27,4 +24,4 @@ services:
 #     - '/home/kaarel/twitch-miner/nate.py:/usr/src/app/run.py'
 #   restart: unless-stopped
 #   networks:
-#     - user-bridge
+#

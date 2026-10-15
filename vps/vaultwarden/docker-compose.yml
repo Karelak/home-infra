@@ -1,6 +1,4 @@
 networks:
-  user-bridge:
-    external: true
   vaultwarden:
 volumes:
   vaultwarden:
@@ -29,7 +27,6 @@ services:
       LOG_FILE: /data/vaultwarden.log
       # LOG_LEVEL: trace
     networks:
-      - user-bridge
       - vaultwarden
     volumes:
       - "vaultwarden:/data"
@@ -57,5 +54,3 @@ services:
       - "postgres:/backup/postgres:ro"
       - "vaultwarden:/backup/vaultwarden:ro"
     restart: always
-    networks:
-      - user-bridge

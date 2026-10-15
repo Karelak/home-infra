@@ -43,7 +43,7 @@ services:
       - "wordpress:/var/www/html"
     networks:
       - wordpress
-      - user-bridge
+
     ports:
       - "10080:80"
 volumes:
@@ -52,5 +52,3 @@ volumes:
   redis:
 networks:
   wordpress:
-  user-bridge:
-    external: true
