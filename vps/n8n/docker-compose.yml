@@ -37,8 +37,8 @@ services:
     hostname: n8n
     image: "docker.n8n.io/n8nio/n8n:latest"
     restart: unless-stopped
-    expose:
-      - 5678/tcp
+    ports:
+      - 5678:5678
     env_file: stack.env
     environment:
       - N8N_PROTOCOL=https

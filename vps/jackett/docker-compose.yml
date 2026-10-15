@@ -6,7 +6,7 @@ services:
     volumes:
       - "flaresolverr:/config"
     expose:
-      - 8191/tcp
+      - 8191
     networks:
       - jackett
   jackett:
@@ -15,12 +15,12 @@ services:
     restart: unless-stopped
     depends_on:
       - flaresolverr
-    env_file:
-      - stack.env
+    # env_file:
+    #   - stack.env
     volumes:
       - "jackett:/config"
-    expose:
-      - 9117/tcp
+    ports:
+      - 9117:9117
     networks:
       - user-bridge
       - jackett

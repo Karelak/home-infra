@@ -12,8 +12,8 @@ services:
       - docker-volume-backup.stop-during-backup=actual-budget
     # env_file:
     #   - stack.env
-    expose:
-      - "5006"
+    ports:
+      - 5006:5006
     volumes:
       - actual-budget:/data
     healthcheck:

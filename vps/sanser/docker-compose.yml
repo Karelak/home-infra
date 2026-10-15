@@ -44,8 +44,8 @@ services:
     networks:
       - wordpress
       - user-bridge
-    expose:
-      - "80"
+    ports:
+      - "10080:80"
 volumes:
   db:
   wordpress:
