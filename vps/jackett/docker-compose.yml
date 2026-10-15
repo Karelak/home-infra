@@ -15,8 +15,8 @@ services:
     restart: unless-stopped
     depends_on:
       - flaresolverr
-    # env_file:
-    #   - stack.env
+    env_file:
+      - stack.env
     volumes:
       - "jackett:/config"
     expose:
