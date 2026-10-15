@@ -14,9 +14,9 @@ services:
     env_file: stack.env
     depends_on:
       - postgres
-    expose:
-      - 80/tcp
-      - 587/tcp
+    ports:
+      - 83:80
+      - 587:587
     environment:
       DOMAIN: "https://vw.kaarel.page"
       SMTP_PORT: 587
