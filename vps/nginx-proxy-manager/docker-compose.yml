@@ -12,11 +12,11 @@ services:
     image: "jc21/nginx-proxy-manager:latest"
     env_file: stack.env
     environment:
-      DB_POSTGRES_HOST: postgres
+      DB_POSTGRES_HOST: "postgres"
       DB_POSTGRES_PORT: "5432"
-      DB_POSTGRES_USER: "${PG_USER}"
-      DB_POSTGRES_PASSWORD: "${PG_PASSWORD}"
-      DB_POSTGRES_NAME: "${PG_DB}"
+      DB_POSTGRES_USER: "nginx"
+      DB_POSTGRES_PASSWORD: "Vg5VaFlGsJmCwZQQbRBy5mFOZbQFM5Qd"
+      DB_POSTGRES_NAME: "nginx"
       DISABLE_IPV6: "true"
     networks:
       - user-bridge
@@ -36,9 +36,9 @@ services:
     hostname: postgres
     restart: unless-stopped
     environment:
-      - "POSTGRES_USER=${PG_USER}"
-      - "POSTGRES_PASSWORD=${PG_PASSWORD}"
-      - "POSTGRES_DB=${PG_DB}"
+      POSTGRES_USER: "nginx"
+      POSTGRES_PASSWORD: "Vg5VaFlGsJmCwZQQbRBy5mFOZbQFM5Qd"
+      POSTGRES_DB: "nginx"
     volumes:
       - "postgres:/var/lib/postgresql/data"
     env_file:
