@@ -21,8 +21,9 @@ services:
       - user-bridge
       - nginx
     ports:
-      - "443:443/tcp"
-      - "80:80/tcp"
+      - "443:443"
+      - "80:80"
+      - "81:81"
     labels:
       - docker-volume-backup.stop-during-backup=nginx-proxy-manager
     restart: unless-stopped
