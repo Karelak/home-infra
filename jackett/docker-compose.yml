@@ -1,0 +1,33 @@
+services:
+  flaresolverr:
+    image: "ghcr.io/thephaseless/byparr:latest"
+    hostname: flaresolverr
+    restart: unless-stopped
+    volumes:
+      - "flaresolverr:/config"
+    expose:
+      - 8191/tcp
+    networks:
+      - jackett
+  jackett:
+    image: "lscr.io/linuxserver/jackett:latest"
+    hostname: jackett
+    restart: unless-stopped
+    depends_on:
+      - flaresolverr
+    env_file:
+      - stack.env
+    volumes:
+      - "jackett:/config"
+    expose:
+      - 9117/tcp
+    networks:
+      - user-bridge
+      - jackett
+networks:
+  jackett:
+  user-bridge:
+    external: true
+volumes:
+  jackett:
+  flaresolverr:

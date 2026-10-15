@@ -1,0 +1,58 @@
+networks:
+  user-bridge:
+    external: true
+  nginx:
+volumes:
+  nginx:
+  letsencrypt:
+  postgres:
+services:
+  nginx:
+    hostname: nginx-proxy-manager
+    image: "jc21/nginx-proxy-manager:latest"
+    env_file: stack.env
+    environment:
+      DB_POSTGRES_HOST: postgres
+      DB_POSTGRES_PORT: "5432"
+      DB_POSTGRES_USER: "${PG_USER}"
+      DB_POSTGRES_PASSWORD: "${PG_PASSWORD}"
+      DB_POSTGRES_NAME: "${PG_DB}"
+    networks:
+      - user-bridge
+      - nginx
+    ports:
+      - "443:443/tcp"
+      - "80:80/tcp"
+    labels:
+      - docker-volume-backup.stop-during-backup=nginx-proxy-manager
+    restart: unless-stopped
+    volumes:
+      - "nginx:/data"
+      - "letsencrypt:/etc/letsencrypt"
+  postgres:
+    image: "postgres:15-alpine"
+    hostname: postgres
+    restart: unless-stopped
+    environment:
+      - "POSTGRES_USER=${PG_USER}"
+      - "POSTGRES_PASSWORD=${PG_PASSWORD}"
+      - "POSTGRES_DB=${PG_DB}"
+    volumes:
+      - "postgres:/var/lib/postgresql/data"
+    env_file:
+      - stack.env
+    expose:
+      - 5432
+    networks:
+      - nginx
+  backup:
+    image: "offen/docker-volume-backup:latest"
+    env_file: stack.env
+    networks:
+      - user-bridge
+    volumes:
+      - "nginx:/backup/nginx:ro"
+      - "letsencrypt:/backup/letsencrypt:ro"
+      - "postgres:/backup/postgres:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    restart: always

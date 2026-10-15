@@ -1,0 +1,62 @@
+networks:
+  user-bridge:
+    external: true
+  vaultwarden:
+volumes:
+  vaultwarden:
+  postgres:
+services:
+  vaultwarden:
+    hostname: vaultwarden
+    image: "vaultwarden/server:latest"
+    labels:
+      - docker-volume-backup.stop-during-backup=vaultwarden
+    env_file: stack.env
+    depends_on:
+      - postgres
+    expose:
+      - 80/tcp
+      - 587/tcp
+    environment:
+      DOMAIN: "https://vw.kaarel.page"
+      SMTP_PORT: 587
+      SMTP_SECURITY: starttls
+      SMTP_HOST: in-v3.mailjet.com
+      SMTP_FROM: vaultwarden@kaarel.page
+      PUSH_ENABLED: true
+      SHOW_PASSWORD_HINT: true
+      SIGNUPS_ALLOWED: true
+      LOG_FILE: /data/vaultwarden.log
+      # LOG_LEVEL: trace
+      DATABASE_URL: postgresql://${PG_USER}:${PG_PASSWORD}@postgres:5432/${PG_DB}
+    networks:
+      - user-bridge
+      - vaultwarden
+    volumes:
+      - "vaultwarden:/data"
+    restart: unless-stopped
+  postgres:
+    image: "postgres:15-alpine"
+    hostname: postgres
+    restart: unless-stopped
+    environment:
+      - "POSTGRES_USER=${PG_USER}"
+      - "POSTGRES_PASSWORD=${PG_PASSWORD}"
+      - "POSTGRES_DB=${PG_DB}"
+    volumes:
+      - "postgres:/var/lib/postgresql/data"
+    env_file:
+      - stack.env
+    expose:
+      - 5432
+    networks:
+      - vaultwarden
+  backup:
+    image: "offen/docker-volume-backup:latest"
+    env_file: stack.env
+    volumes:
+      - "postgres:/backup/postgres:ro"
+      - "vaultwarden:/backup/vaultwarden:ro"
+    restart: always
+    networks:
+      - user-bridge
