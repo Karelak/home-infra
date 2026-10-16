@@ -3,8 +3,6 @@ volumes:
 
 services:
   wg-easy:
-    environment:
-      - HOST=0.0.0.0
     image: ghcr.io/wg-easy/wg-easy:latest
     hostname: wg-easy
     networks:
