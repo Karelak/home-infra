@@ -7,7 +7,6 @@ services:
     hostname: wg-easy
     networks:
       wg:
-        ipv4_address: 10.42.42.42
     volumes:
       - etc_wireguard:/etc/wireguard
       - /lib/modules:/lib/modules:ro
@@ -29,7 +28,3 @@ networks:
   wg:
     driver: bridge
     enable_ipv6: false
-    ipam:
-      driver: default
-      config:
-        - subnet: 10.42.42.0/24
