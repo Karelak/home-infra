@@ -10,6 +10,8 @@ services:
     volumes:
       - etc_wireguard:/etc/wireguard
       - /lib/modules:/lib/modules:ro
+    env_file:
+      - stack.env
     ports:
       - "51820:51820/udp"
       - "51821:51821/tcp" #webui
