@@ -1,0 +1,19 @@
+services:
+  factorio:
+    container_name: factorio
+    image: factoriotools/factorio:2.0.77
+    restart: unless-stopped
+    ports:
+      - "34197:34197/udp"
+    env_file:
+      - stack.env
+    volumes:
+      - factorio:/factorio
+    environment:
+      - DLC_SPACE_AGE=true
+      - UPDATE_MODS_ON_START=true
+      - USERNAME=${USERNAME}
+      - TOKEN=${TOKEN}
+
+volumes:
+  factorio:
