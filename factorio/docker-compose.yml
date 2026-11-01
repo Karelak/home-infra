@@ -1,8 +1,7 @@
 services:
   factorio:
-    container_name: factorio
-    image: factoriotools/factorio:2.0.77
     restart: unless-stopped
+    image: factoriotools/factorio:2.0.77
     ports:
       - "34197:34197/udp"
     env_file:
