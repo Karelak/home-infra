@@ -6,6 +6,11 @@ services:
       - "34197:34197/udp"
     volumes:
       - factorio:/factorio
+    healthcheck:
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
     environment:
       DLC_SPACE_AGE: true
       UPDATE_MODS_ON_START: true

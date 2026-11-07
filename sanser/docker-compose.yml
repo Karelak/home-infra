@@ -6,9 +6,10 @@ services:
     command: ["--transaction-isolation=READ-COMMITTED", "--binlog-format=ROW"]
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
-      interval: 10s
-      timeout: 5s
+      interval: 1m30s
+      timeout: 30s
       retries: 5
+      start_period: 30s
     environment:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
@@ -28,9 +29,10 @@ services:
       - 6379
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
+      interval: 1m30s
+      timeout: 30s
       retries: 5
+      start_period: 30s
     networks:
       - wordpress
   wordpress:

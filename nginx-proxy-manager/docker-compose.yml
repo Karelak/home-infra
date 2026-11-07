@@ -18,9 +18,9 @@ services:
     networks:
       - nginx
     ports:
-      - "443:443"
-      - "80:80"
-      - "81:81"
+      - 443:443
+      - 80:80
+      - 81:81
     labels:
       docker-volume-backup.stop-during-backup: nginx-proxy-manager
     restart: unless-stopped
@@ -42,9 +42,10 @@ services:
       docker-volume-backup.stop-during-backup: nginx-proxy-manager
     healthcheck:
       test: ["CMD-SHELL", "pg_isready"]
-      interval: 10s
-      timeout: 5s
+      interval: 1m30s
+      timeout: 30s
       retries: 5
+      start_period: 30s
     volumes:
       - postgres:/var/lib/postgresql/data
     expose:

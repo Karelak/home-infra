@@ -9,7 +9,12 @@ services:
       - 8191
     networks:
       - jackett
-    # healtcheck is built in so need to add. done via curl
+    healthcheck:
+      # healtcheck is built into image so no need to set it up here as a command
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
   jackett:
     image: "lscr.io/linuxserver/jackett:latest"
     hostname: jackett
