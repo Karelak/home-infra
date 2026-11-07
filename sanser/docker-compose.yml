@@ -3,8 +3,12 @@ services:
     image: "mariadb:latest"
     hostname: db
     restart: unless-stopped
-    command: "--transaction-isolation=READ-COMMITTED --binlog-format=ROW"
-
+    command: ["--transaction-isolation=READ-COMMITTED", "--binlog-format=ROW"]
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     environment:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
