@@ -1,8 +1,10 @@
 networks:
   n8n:
+
 volumes:
   n8n:
   postgres:
+
 services:
   redis:
     image: "redis:latest"
@@ -18,6 +20,7 @@ services:
       start_period: 30s
     networks:
       - n8n
+
   postgres:
     image: "postgres:15-alpine"
     hostname: postgres
@@ -38,6 +41,7 @@ services:
       - 5432
     networks:
       - n8n
+
   n8n:
     image: "n8nio/n8n:latest"
     hostname: n8n
@@ -51,18 +55,28 @@ services:
       DB_POSTGRESDB_DATABASE: ${POSTGRES_DB}
       DB_POSTGRESDB_USER: ${POSTGRES_USER}
       DB_POSTGRESDB_PASSWORD: ${POSTGRES_PASSWORD}
+      EXECUTIONS_MODE: queue
+      QUEUE_BULL_REDIS_HOST: redis
       N8N_PROTOCOL: https
+      N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY}
       NODE_ENV: production
       GENERIC_TIMEZONE: Europe/London
       N8N_RUNNERS_MODE: external
       N8N_NATIVE_PYTHON_RUNNER: true
       N8N_RUNNERS_BROKER_LISTEN_ADDRESS: 0.0.0.0
+      N8N_RUNNERS_AUTH_TOKEN: ${N8N_RUNNERS_AUTH_TOKEN}
       N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: true
       N8N_BLOCK_ENV_ACCESS_IN_NODE: true
       N8N_GIT_NODE_DISABLE_BARE_REPOS: true
       N8N_SKIP_AUTH_ON_OAUTH_CALLBACK: false
       N8N_PROXY_HOPS: 1
       N8N_MIGRATE_FS_STORAGE_PATH: true
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5678/healthz/readiness"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
     volumes:
       - n8n:/home/node/.n8n
     networks:
@@ -72,14 +86,74 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+
+  worker:
+    image: "n8nio/n8n:latest"
+    restart: unless-stopped
+    command: worker
+    environment:
+      DB_TYPE: postgresdb
+      DB_POSTGRESDB_HOST: postgres
+      DB_POSTGRESDB_PORT: 5432
+      DB_POSTGRESDB_DATABASE: ${POSTGRES_DB}
+      DB_POSTGRESDB_USER: ${POSTGRES_USER}
+      DB_POSTGRESDB_PASSWORD: ${POSTGRES_PASSWORD}
+      EXECUTIONS_MODE: queue
+      QUEUE_BULL_REDIS_HOST: redis
+      QUEUE_HEALTH_CHECK_ACTIVE: true
+      N8N_CONCURRENCY_PRODUCTION_LIMIT: 10
+      NODE_ENV: production
+      GENERIC_TIMEZONE: Europe/London
+      N8N_RUNNERS_MODE: external
+      N8N_NATIVE_PYTHON_RUNNER: true
+      N8N_RUNNERS_BROKER_LISTEN_ADDRESS: 0.0.0.0
+      N8N_RUNNERS_AUTH_TOKEN: ${N8N_RUNNERS_AUTH_TOKEN}
+      N8N_BLOCK_ENV_ACCESS_IN_NODE: true
+      N8N_GIT_NODE_DISABLE_BARE_REPOS: true
+      N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY}
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget --spider -q http://localhost:5678/healthz/readiness || exit 1",
+        ]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - n8n:/home/node/.n8n # shared volume = shared encryption key + settings
+    networks:
+      - n8n
+    depends_on:
+      n8n:
+        condition: service_healthy # main runs migrations first
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
   task-runners:
     image: "n8nio/runners:latest"
     restart: unless-stopped
     expose:
-      - 5679
+      - 5681
+      - 5682
     networks:
       - n8n
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -f http://localhost:5681/healthz && curl -f http://localhost:5682/healthz",
+        ]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
     environment:
-      - "N8N_RUNNERS_TASK_BROKER_URI=http://n8n:5679"
+      N8N_RUNNERS_TASK_BROKER_URI: http://worker:5679
+      N8N_RUNNERS_AUTH_TOKEN: ${N8N_RUNNERS_AUTH_TOKEN}
     depends_on:
-      - n8n
+      worker:
+        condition: service_healthy
