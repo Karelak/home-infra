@@ -29,6 +29,14 @@ services:
       DB_POSTGRES_PORT: 5432
       DB_POSTGRES_USER: "${POSTGRES_USER}"
       DISABLE_IPV6: true
+    healthcheck:
+      interval: "1m30s"
+      retries: 5
+      start_period: "30s"
+      test:
+        - "CMD"
+        - "/usr/bin/check-health"
+      timeout: "30s"
     hostname: "nginx-proxy-manager"
     image: "jc21/nginx-proxy-manager:latest"
     labels:
