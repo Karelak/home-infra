@@ -6,6 +6,15 @@ services:
       WATCHTOWER_INCLUDE_STOPPED: false
       WATCHTOWER_POLL_INTERVAL: 21600
       WATCHTOWER_UPDATE_ON_START: true
+    healthcheck:
+      interval: "1m30s"
+      retries: 5
+      start_period: "30s"
+      test:
+        - "CMD"
+        - "/watchtower"
+        - "--health-check"
+      timeout: "30s"
     image: "nickfedor/watchtower:latest"
     restart: "unless-stopped"
     volumes:
