@@ -2,7 +2,7 @@ volumes:
   actual-budget:
 services:
   server:
-    image: docker.io/actualbudget/actual-server:latest
+    image: actualbudget/actual-server:latest
     labels:
       docker-volume-backup.stop-during-backup: actual-budget
     ports:
