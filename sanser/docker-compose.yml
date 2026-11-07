@@ -58,6 +58,16 @@ services:
       WORDPRESS_DB_NAME: "${MYSQL_DATABASE}"
       WORDPRESS_DB_PASSWORD: "${MYSQL_PASSWORD}"
       WORDPRESS_DB_USER: "${MYSQL_USER}"
+    healthcheck:
+      interval: "1m30s"
+      retries: 5
+      start_period: "30s"
+      test:
+        - "CMD"
+        - "curl"
+        - "-f"
+        - "http://localhost:80"
+      timeout: "30s"
     hostname: "sanser"
     image: "wordpress:latest"
     networks:
