@@ -1,18 +1,20 @@
-volumes:
-  actual-budget:
 services:
   server:
+    healthcheck:
+      interval: 1m30s
+      retries: 5
+      start_period: 30s
+      test:
+        - CMD-SHELL
+        - node scripts/health-check.js
+      timeout: 30s
     image: actualbudget/actual-server:latest
     labels:
       docker-volume-backup.stop-during-backup: actual-budget
     ports:
       - 5006:5006
+    restart: unless-stopped
     volumes:
       - actual-budget:/data
-    healthcheck:
-      test: ["CMD-SHELL", "node scripts/health-check.js"]
-      interval: 1m30s
-      timeout: 30s
-      retries: 5
-      start_period: 30s
-    restart: unless-stopped
+volumes:
+  actual-budget:
