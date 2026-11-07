@@ -1,30 +1,44 @@
+networks:
+  jackett: null
 services:
   flaresolverr:
-    image: "ghcr.io/thephaseless/byparr:latest"
-    hostname: flaresolverr
-    restart: unless-stopped
-    volumes:
-      - "flaresolverr:/config"
     expose:
       - 8191
+    healthcheck:
+      interval: "1m30s"
+      retries: 5
+      start_period: "30s"
+      timeout: "30s"
+    hostname: "flaresolverr"
+    image: "ghcr.io/thephaseless/byparr:latest"
     networks:
-      - jackett
+      - "jackett"
+    restart: "unless-stopped"
+    volumes:
+      - "flaresolverr:/config"
   jackett:
-    image: "lscr.io/linuxserver/jackett:latest"
-    hostname: jackett
-    restart: unless-stopped
     depends_on:
-      - flaresolverr
-    # env_file:
-    #   - stack.env
+      flaresolverr:
+        condition: "service_healthy"
+    healthcheck:
+      interval: "1m30s"
+      retries: 5
+      start_period: "30s"
+      test:
+        - "CMD"
+        - "curl"
+        - "-f"
+        - "http://localhost:9117"
+      timeout: "30s"
+    hostname: "jackett"
+    image: "lscr.io/linuxserver/jackett:latest"
+    networks:
+      - "jackett"
+    ports:
+      - "9117:9117"
+    restart: "unless-stopped"
     volumes:
       - "jackett:/config"
-    ports:
-      - 9117:9117
-    networks:
-      - jackett
-networks:
-  jackett:
 volumes:
-  jackett:
-  flaresolverr:
+  flaresolverr: null
+  jackett: null

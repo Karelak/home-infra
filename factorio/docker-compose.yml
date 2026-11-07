@@ -1,18 +1,20 @@
 services:
   factorio:
-    restart: unless-stopped
-    image: factoriotools/factorio:2.0.77
+    environment:
+      DLC_SPACE_AGE: true
+      TOKEN: "${TOKEN}"
+      UPDATE_MODS_ON_START: true
+      USERNAME: "${USERNAME}"
+    healthcheck:
+      interval: "1m30s"
+      retries: 5
+      start_period: "30s"
+      timeout: "30s"
+    image: "factoriotools/factorio:2.0.77"
     ports:
       - "34197:34197/udp"
-    env_file:
-      - stack.env
+    restart: "unless-stopped"
     volumes:
-      - factorio:/factorio
-    environment:
-      - DLC_SPACE_AGE=true
-      - UPDATE_MODS_ON_START=true
-      - USERNAME=${USERNAME}
-      - TOKEN=${TOKEN}
-
+      - "factorio:/factorio"
 volumes:
-  factorio:
+  factorio: null
