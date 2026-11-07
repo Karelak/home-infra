@@ -9,6 +9,11 @@ services:
       - "SYS_MODULE"
     environment:
       INSECURE: "${INSECURE}"
+    healthcheck:
+      interval: "1m30s"
+      retries: 5
+      start_period: "30s"
+      timeout: "30s"
     image: "ghcr.io/wg-easy/wg-easy:15"
     networks:
       - "wg"
