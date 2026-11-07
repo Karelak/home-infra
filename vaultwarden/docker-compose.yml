@@ -60,6 +60,11 @@ services:
       SMTP_PORT: 587
       SMTP_SECURITY: "starttls"
       SMTP_USERNAME: "${SMTP_USERNAME}"
+    healthcheck:
+      interval: "1m30s"
+      retries: 5
+      start_period: "30s"
+      timeout: "30s"
     hostname: "vaultwarden"
     image: "vaultwarden/server:latest"
     labels:
