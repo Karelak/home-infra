@@ -13,6 +13,11 @@ services:
       - 6379
     volumes:
       - "redis:/data"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - n8n
   postgres:
@@ -23,6 +28,11 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     volumes:
       - "postgres:/var/lib/postgresql/data"
     expose:
@@ -59,7 +69,10 @@ services:
     networks:
       - n8n
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
   task-runners:
     image: "n8nio/runners:latest"
     restart: unless-stopped
