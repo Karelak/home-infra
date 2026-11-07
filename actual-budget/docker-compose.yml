@@ -11,8 +11,7 @@ services:
       - actual-budget:/data
     healthcheck:
       test: ["CMD-SHELL", "node scripts/health-check.js"]
-      interval: 60s
-      timeout: 10s
-      retries: 3
-      start_period: 20s
+      interval: 10s
+      timeout: 5s
+      retries: 5
     restart: unless-stopped
