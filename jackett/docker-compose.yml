@@ -9,13 +9,14 @@ services:
       - 8191
     networks:
       - jackett
+    # healtcheck is built in so need to add. done via curl
   jackett:
     image: "lscr.io/linuxserver/jackett:latest"
     hostname: jackett
     restart: unless-stopped
     depends_on:
-      - flaresolverr
-
+      flaresolverr:
+        condition: service_healthy
     volumes:
       - "jackett:/config"
     ports:
