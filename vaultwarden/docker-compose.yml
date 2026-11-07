@@ -6,26 +6,33 @@ volumes:
 services:
   vaultwarden:
     hostname: vaultwarden
-    image: "vaultwarden/server:latest"
+    image: vaultwarden/server:latest
     labels:
-      - docker-volume-backup.stop-during-backup=vaultwarden
-
+      docker-volume-backup.stop-during-backup: vaultwarden
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     ports:
       - 83:80
       - 587:587
     environment:
-      DOMAIN: "https://vw.kaarel.page"
+      DOMAIN: ${DOMAIN}
       SMTP_PORT: 587
       SMTP_SECURITY: starttls
-      SMTP_HOST: in-v3.mailjet.com
-      SMTP_FROM: vaultwarden@kaarel.page
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_FROM: ${SMTP_FROM}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      SMTP_USERNAME: ${SMTP_USERNAME}
       PUSH_ENABLED: true
       SHOW_PASSWORD_HINT: true
       SIGNUPS_ALLOWED: true
       LOG_FILE: /data/vaultwarden.log
-      # LOG_LEVEL: trace
+      PUSH_INSTALLATION_ID: ${PUSH_INSTALLATION_ID}
+      PUSH_INSTALLATION_KEY: ${PUSH_INSTALLATION_KEY}
+      PUSH_RELAY_URI: https://api.bitwarden.eu
+      PUSH_IDENTITY_URI: https://identity.bitwarden.eu
+      ADMIN_TOKEN: ${ADMIN_TOKEN}
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
     networks:
       - vaultwarden
     volumes:
@@ -36,19 +43,31 @@ services:
     hostname: postgres
     restart: unless-stopped
     environment:
-      - "POSTGRES_USER=${PG_USER}"
-      - "POSTGRES_PASSWORD=${PG_PASSWORD}"
-      - "POSTGRES_DB=${PG_DB}"
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     volumes:
       - postgres:/var/lib/postgresql/data
-
     expose:
       - 5432
     networks:
       - vaultwarden
   backup:
-    image: "offen/docker-volume-backup:latest"
-
+    image: offen/docker-volume-backup:latest
+    environment:
+      AGE_PUBLIC_KEYS: ${AGE_PUBLIC_KEYS}
+      DROPBOX_REFRESH_TOKEN: ${DROPBOX_REFRESH_TOKEN}
+      DROPBOX_APP_KEY: ${DROPBOX_APP_KEY}
+      DROPBOX_APP_SECRET: ${DROPBOX_APP_SECRET}
+      DROPBOX_REMOTE_PATH: /backups/vaultwarden
+      BACKUP_RETENTION_DAYS: 5
+      BACKUP_JITTER: 1h
+      BACKUP_STOP_DURING_BACKUP_LABEL: vaultwarden
     volumes:
       - postgres:/backup/postgres:ro
       - vaultwarden:/backup/vaultwarden:ro
