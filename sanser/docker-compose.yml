@@ -4,7 +4,7 @@ services:
     hostname: db
     restart: unless-stopped
     command: "--transaction-isolation=READ-COMMITTED --binlog-format=ROW"
-    env_file: stack.env
+
     environment:
       MYSQL_DATABASE: wordpress
       MYSQL_USER: wordpress
@@ -31,7 +31,7 @@ services:
     depends_on:
       - db
       - redis
-    env_file: stack.env
+
     environment:
       WORDPRESS_DB_HOST: "db:3306"
       WORDPRESS_DB_NAME: wordpress

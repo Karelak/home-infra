@@ -4,8 +4,7 @@ services:
     image: factoriotools/factorio:2.0.77
     ports:
       - "34197:34197/udp"
-    env_file:
-      - stack.env
+
     volumes:
       - factorio:/factorio
     environment:

@@ -8,8 +8,6 @@ services:
     hostname: actual-budget
     labels:
       - docker-volume-backup.stop-during-backup=actual-budget
-    # env_file:
-    #   - stack.env
     ports:
       - 5006:5006
     volumes:
