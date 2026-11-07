@@ -1,5 +1,0 @@
-{
-  "yaml.schemas": {
-    "https://raw.githubusercontent.com/compose-spec/compose-go/master/schema/compose-spec.json": "file:///c%3A/Users/Kaarel/Code/home-infra/vps/arr-stack/vps.compose.yml"
-  }
-}
