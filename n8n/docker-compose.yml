@@ -48,6 +48,25 @@ services:
     restart: "unless-stopped"
     volumes:
       - "n8n:/home/node/.n8n"
+  n8n-runners:
+    depends_on:
+      n8n:
+        condition: "service_healthy"
+    environment:
+      N8N_RUNNERS_AUTH_TOKEN: "${N8N_RUNNERS_AUTH_TOKEN}"
+      N8N_RUNNERS_TASK_BROKER_URI: "http://n8n:5679"
+    healthcheck:
+      interval: "1m30s"
+      retries: 5
+      start_period: "30s"
+      test:
+        - "CMD-SHELL"
+        - "wget --spider -q http://localhost:5681/healthz && wget --spider -q http://localhost:5682/healthz"
+      timeout: "30s"
+    image: "n8nio/runners:latest"
+    networks:
+      - "n8n"
+    restart: "unless-stopped"
   postgres:
     environment:
       POSTGRES_DB: "${POSTGRES_DB}"
@@ -103,7 +122,7 @@ services:
       start_period: "30s"
       test:
         - "CMD-SHELL"
-        - "nc -z 127.0.0.1 5681 && nc -z 127.0.0.1 5682"
+        - "wget --spider -q http://localhost:5681/healthz && wget --spider -q http://localhost:5682/healthz"
       timeout: "30s"
     image: "n8nio/runners:latest"
     networks:
@@ -112,8 +131,6 @@ services:
   worker:
     command: "worker"
     depends_on:
-      n8n:
-        condition: "service_healthy"
       postgres:
         condition: "service_healthy"
       redis:
