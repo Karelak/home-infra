@@ -19,7 +19,7 @@ services:
     networks:
       - wordpress
     expose:
-      - "3306"
+      - 3306
   redis:
     image: "redis:latest"
     restart: unless-stopped
