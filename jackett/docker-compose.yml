@@ -22,6 +22,12 @@ services:
     depends_on:
       flaresolverr:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9117"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
     volumes:
       - jackett:/config
     ports:
