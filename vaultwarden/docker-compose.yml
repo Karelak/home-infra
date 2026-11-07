@@ -3,75 +3,75 @@ networks:
 services:
   backup:
     environment:
-      AGE_PUBLIC_KEYS: ${AGE_PUBLIC_KEYS}
-      BACKUP_JITTER: 1h
+      AGE_PUBLIC_KEYS: "${AGE_PUBLIC_KEYS}"
+      BACKUP_JITTER: "1h"
       BACKUP_RETENTION_DAYS: 5
-      BACKUP_STOP_DURING_BACKUP_LABEL: vaultwarden
-      DROPBOX_APP_KEY: ${DROPBOX_APP_KEY}
-      DROPBOX_APP_SECRET: ${DROPBOX_APP_SECRET}
-      DROPBOX_REFRESH_TOKEN: ${DROPBOX_REFRESH_TOKEN}
-      DROPBOX_REMOTE_PATH: /backups/vaultwarden
-    image: offen/docker-volume-backup:latest
-    restart: always
+      BACKUP_STOP_DURING_BACKUP_LABEL: "vaultwarden"
+      DROPBOX_APP_KEY: "${DROPBOX_APP_KEY}"
+      DROPBOX_APP_SECRET: "${DROPBOX_APP_SECRET}"
+      DROPBOX_REFRESH_TOKEN: "${DROPBOX_REFRESH_TOKEN}"
+      DROPBOX_REMOTE_PATH: "/backups/vaultwarden"
+    image: "offen/docker-volume-backup:latest"
+    restart: "always"
     volumes:
-      - postgres:/backup/postgres:ro
-      - vaultwarden:/backup/vaultwarden:ro
+      - "postgres:/backup/postgres:ro"
+      - "vaultwarden:/backup/vaultwarden:ro"
   postgres:
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: "${POSTGRES_DB}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      POSTGRES_USER: "${POSTGRES_USER}"
     expose:
       - 5432
     healthcheck:
-      interval: 1m30s
+      interval: "1m30s"
       retries: 5
-      start_period: 30s
+      start_period: "30s"
       test:
-        - CMD-SHELL
-        - pg_isready
-      timeout: 30s
-    hostname: postgres
-    image: postgres:15-alpine
+        - "CMD-SHELL"
+        - "pg_isready"
+      timeout: "30s"
+    hostname: "postgres"
+    image: "postgres:15-alpine"
     networks:
-      - vaultwarden
-    restart: unless-stopped
+      - "vaultwarden"
+    restart: "unless-stopped"
     volumes:
-      - postgres:/var/lib/postgresql/data
+      - "postgres:/var/lib/postgresql/data"
   vaultwarden:
     depends_on:
       postgres:
-        condition: service_healthy
+        condition: "service_healthy"
     environment:
-      ADMIN_TOKEN: ${ADMIN_TOKEN}
-      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
-      DOMAIN: ${DOMAIN}
-      LOG_FILE: /data/vaultwarden.log
+      ADMIN_TOKEN: "${ADMIN_TOKEN}"
+      DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}"
+      DOMAIN: "${DOMAIN}"
+      LOG_FILE: "/data/vaultwarden.log"
       PUSH_ENABLED: true
-      PUSH_IDENTITY_URI: https://identity.bitwarden.eu
-      PUSH_INSTALLATION_ID: ${PUSH_INSTALLATION_ID}
-      PUSH_INSTALLATION_KEY: ${PUSH_INSTALLATION_KEY}
-      PUSH_RELAY_URI: https://api.bitwarden.eu
+      PUSH_IDENTITY_URI: "https://identity.bitwarden.eu"
+      PUSH_INSTALLATION_ID: "${PUSH_INSTALLATION_ID}"
+      PUSH_INSTALLATION_KEY: "${PUSH_INSTALLATION_KEY}"
+      PUSH_RELAY_URI: "https://api.bitwarden.eu"
       SHOW_PASSWORD_HINT: true
       SIGNUPS_ALLOWED: true
-      SMTP_FROM: ${SMTP_FROM}
-      SMTP_HOST: ${SMTP_HOST}
-      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      SMTP_FROM: "${SMTP_FROM}"
+      SMTP_HOST: "${SMTP_HOST}"
+      SMTP_PASSWORD: "${SMTP_PASSWORD}"
       SMTP_PORT: 587
-      SMTP_SECURITY: starttls
-      SMTP_USERNAME: ${SMTP_USERNAME}
-    hostname: vaultwarden
-    image: vaultwarden/server:latest
+      SMTP_SECURITY: "starttls"
+      SMTP_USERNAME: "${SMTP_USERNAME}"
+    hostname: "vaultwarden"
+    image: "vaultwarden/server:latest"
     labels:
-      docker-volume-backup.stop-during-backup: vaultwarden
+      docker-volume-backup.stop-during-backup: "vaultwarden"
     networks:
-      - vaultwarden
+      - "vaultwarden"
     ports:
-      - 83:80
-      - 587:587
-    restart: unless-stopped
+      - "83:80"
+      - "587:587"
+    restart: "unless-stopped"
     volumes:
-      - vaultwarden:/data
+      - "vaultwarden:/data"
 volumes:
   postgres: null
   vaultwarden: null

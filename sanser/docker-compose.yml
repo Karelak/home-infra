@@ -3,72 +3,70 @@ networks:
 services:
   db:
     command:
-      - --transaction-isolation=READ-COMMITTED
-      - --binlog-format=ROW
+      - "--transaction-isolation=READ-COMMITTED"
+      - "--binlog-format=ROW"
     environment:
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_DATABASE: "${MYSQL_DATABASE}"
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+      MYSQL_USER: "${MYSQL_USER}"
     expose:
       - 3306
     healthcheck:
-      interval: 1m30s
+      interval: "1m30s"
       retries: 5
-      start_period: 30s
+      start_period: "30s"
       test:
-        - CMD
-        - healthcheck.sh
-        - --connect
-        - --innodb_initialized
-      timeout: 30s
-    hostname: db
-    image: mariadb:latest
+        - "CMD"
+        - "healthcheck.sh"
+        - "--connect"
+        - "--innodb_initialized"
+      timeout: "30s"
+    hostname: "db"
+    image: "mariadb:latest"
     networks:
-      - wordpress
-    restart: unless-stopped
+      - "wordpress"
+    restart: "unless-stopped"
     volumes:
-      - db:/var/lib/mysql
+      - "db:/var/lib/mysql"
   redis:
     expose:
       - 6379
     healthcheck:
-      interval: 1m30s
+      interval: "1m30s"
       retries: 5
-      start_period: 30s
+      start_period: "30s"
       test:
-        - CMD
-        - redis-cli
-        - ping
-      timeout: 30s
-    hostname: redis
-    image: redis:latest
+        - "CMD"
+        - "redis-cli"
+        - "ping"
+      timeout: "30s"
+    hostname: "redis"
+    image: "redis:latest"
     networks:
-      - wordpress
-    restart: unless-stopped
+      - "wordpress"
+    restart: "unless-stopped"
   wordpress:
     depends_on:
       db:
-        condition: service_healthy
+        condition: "service_healthy"
       redis:
-        condition: service_healthy
+        condition: "service_healthy"
     environment:
-      WORDPRESS_CONFIG_EXTRA: |
-        define('WP_REDIS_HOST', 'redis');
-        define('WP_REDIS_PORT', 6379);
-      WORDPRESS_DB_HOST: db:3306
-      WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
-      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
-      WORDPRESS_DB_USER: ${MYSQL_USER}
-    hostname: sanser
-    image: wordpress:latest
+      WORDPRESS_CONFIG_EXTRA: "define('WP_REDIS_HOST', 'redis');\ndefine('WP_REDIS_PORT', 6379);\n"
+      WORDPRESS_DB_HOST: "db:3306"
+      WORDPRESS_DB_NAME: "${MYSQL_DATABASE}"
+      WORDPRESS_DB_PASSWORD: "${MYSQL_PASSWORD}"
+      WORDPRESS_DB_USER: "${MYSQL_USER}"
+    hostname: "sanser"
+    image: "wordpress:latest"
     networks:
-      - wordpress
+      - "wordpress"
     ports:
-      - 10080:80
-    restart: unless-stopped
+      - "10080:80"
+    restart: "unless-stopped"
     volumes:
-      - wordpress:/var/www/html
+      - "wordpress:/var/www/html"
 volumes:
   db: null
   wordpress: null

@@ -1,21 +1,21 @@
 networks:
   wg:
-    driver: bridge
+    driver: "bridge"
     enable_ipv6: false
 services:
   wg-easy:
     cap_add:
-      - NET_ADMIN
-      - SYS_MODULE
+      - "NET_ADMIN"
+      - "SYS_MODULE"
     environment:
-      INSECURE: ${INSECURE}
-    image: ghcr.io/wg-easy/wg-easy:15
+      INSECURE: "${INSECURE}"
+    image: "ghcr.io/wg-easy/wg-easy:15"
     networks:
-      - wg
+      - "wg"
     ports:
-      - 51820:51820/udp
-      - 51821:51821/tcp
-    restart: unless-stopped
+      - "51820:51820/udp"
+      - "51821:51821/tcp"
+    restart: "unless-stopped"
     sysctls:
       net.ipv4.conf.all.src_valid_mark: 1
       net.ipv4.ip_forward: 1
@@ -23,7 +23,7 @@ services:
       net.ipv6.conf.all.forwarding: 1
       net.ipv6.conf.default.forwarding: 1
     volumes:
-      - etc_wireguard:/etc/wireguard
-      - /lib/modules:/lib/modules:ro
+      - "etc_wireguard:/etc/wireguard"
+      - "/lib/modules:/lib/modules:ro"
 volumes:
   etc_wireguard: null

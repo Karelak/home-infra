@@ -1,9 +1,9 @@
 services:
   kaarel:
-    image: rdavidoff/twitch-channel-points-miner-v2:latest
-    restart: unless-stopped
+    image: "rdavidoff/twitch-channel-points-miner-v2:latest"
+    restart: "unless-stopped"
     volumes:
-      - twitch-miner:/usr/src/app
-      - /home/kaarel/twitch-miner/kaarel.py:/usr/src/app/run.py
+      - "twitch-miner:/usr/src/app"
+      - "/home/kaarel/twitch-miner/kaarel.py:/usr/src/app/run.py"
 volumes:
   twitch-miner: null
