@@ -29,16 +29,15 @@ services:
       N8N_RUNNERS_MODE: "external"
       N8N_SKIP_AUTH_ON_OAUTH_CALLBACK: false
       NODE_ENV: "production"
+      OFFLOAD_MANUAL_EXECUTIONS_TO_WORKERS: true
       QUEUE_BULL_REDIS_HOST: "redis"
     healthcheck:
       interval: "1m30s"
       retries: 5
       start_period: "30s"
       test:
-        - "CMD"
-        - "curl"
-        - "-f"
-        - "http://localhost:5678/healthz/readiness"
+        - "CMD-SHELL"
+        - "wget --spider -q http://localhost:5678/healthz/readiness || exit 1"
       timeout: "30s"
     hostname: "n8n"
     image: "n8nio/n8n:latest"
