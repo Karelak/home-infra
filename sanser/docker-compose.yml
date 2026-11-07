@@ -9,7 +9,7 @@ services:
       MYSQL_DATABASE: wordpress
       MYSQL_USER: wordpress
     volumes:
-      - "db:/var/lib/mysql"
+      - db:/var/lib/mysql
     networks:
       - wordpress
     expose:
@@ -21,7 +21,7 @@ services:
     expose:
       - 6379
     volumes:
-      - "redis:/data"
+      - redis:/data
     networks:
       - wordpress
   wordpress:
@@ -40,7 +40,7 @@ services:
         define('WP_REDIS_HOST', 'redis');
         define('WP_REDIS_PORT', 6379);
     volumes:
-      - "wordpress:/var/www/html"
+      - wordpress:/var/www/html
     networks:
       - wordpress
 

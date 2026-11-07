@@ -9,8 +9,8 @@ services:
     environment:
       - TERM=xterm-256color
     volumes:
-      - "twitch-miner:/usr/src/app"
-      - "/home/kaarel/twitch-miner/kaarel.py:/usr/src/app/run.py"
+      - twitch-miner:/usr/src/app
+      - /home/kaarel/twitch-miner/kaarel.py:/usr/src/app/run.py
     restart: unless-stopped
 # changed password
 # nate:

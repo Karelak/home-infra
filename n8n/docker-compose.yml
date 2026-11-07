@@ -12,7 +12,7 @@ services:
     expose:
       - 6379
     volumes:
-      - "redis:/data"
+      - redis:/data
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -34,7 +34,7 @@ services:
       timeout: 5s
       retries: 5
     volumes:
-      - "postgres:/var/lib/postgresql/data"
+      - postgres:/var/lib/postgresql/data
     expose:
       - 5432
     networks:
@@ -65,7 +65,7 @@ services:
       N8N_PROXY_HOPS: 1
       N8N_MIGRATE_FS_STORAGE_PATH: true
     volumes:
-      - "n8n:/home/node/.n8n"
+      - n8n:/home/node/.n8n
     networks:
       - n8n
     depends_on:
