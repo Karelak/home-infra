@@ -7,10 +7,10 @@ services:
     volumes:
       - factorio:/factorio
     environment:
-      - DLC_SPACE_AGE=true
-      - UPDATE_MODS_ON_START=true
-      - USERNAME=${USERNAME}
-      - TOKEN=${TOKEN}
+      DLC_SPACE_AGE: true
+      UPDATE_MODS_ON_START: true
+      USERNAME: ${USERNAME}
+      TOKEN: ${TOKEN}
 
 volumes:
   factorio:
