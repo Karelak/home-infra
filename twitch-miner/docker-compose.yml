@@ -2,12 +2,7 @@ volumes:
   twitch-miner:
 services:
   kaarel:
-    image: "rdavidoff/twitch-channel-points-miner-v2:latest"
-    stdin_open: true
-    tty: true
-    hostname: twitch-miner
-    environment:
-      - TERM=xterm-256color
+    image: rdavidoff/twitch-channel-points-miner-v2:latest
     volumes:
       - twitch-miner:/usr/src/app
       - /home/kaarel/twitch-miner/kaarel.py:/usr/src/app/run.py
