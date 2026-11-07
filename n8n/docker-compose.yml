@@ -103,7 +103,7 @@ services:
       start_period: "30s"
       test:
         - "CMD-SHELL"
-        - "wget -q --spider http://localhost:5681/healthz && wget -q --spider http://localhost:5682/healthz"
+        - "nc -z 127.0.0.1 5681 && nc -z 127.0.0.1 5682"
       timeout: "30s"
     image: "n8nio/runners:latest"
     networks:
