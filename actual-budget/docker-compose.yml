@@ -1,11 +1,8 @@
-networks:
-  actual-budget:
 volumes:
   actual-budget:
 services:
   server:
     image: docker.io/actualbudget/actual-server:latest
-    hostname: actual-budget
     labels:
       - docker-volume-backup.stop-during-backup=actual-budget
     ports:
@@ -18,6 +15,4 @@ services:
       timeout: 10s
       retries: 3
       start_period: 20s
-    networks:
-      - actual-budget
     restart: unless-stopped
