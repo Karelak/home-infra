@@ -4,7 +4,6 @@ services:
     image: factoriotools/factorio:2.0.77 #specific version due to pirated gog copy
     ports:
       - "34197:34197/udp"
-
     volumes:
       - factorio:/factorio
     environment:
