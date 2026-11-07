@@ -8,9 +8,13 @@ services:
   nginx:
     hostname: nginx-proxy-manager
     image: "jc21/nginx-proxy-manager:latest"
-
     environment:
-      DISABLE_IPV6: "true"
+      DISABLE_IPV6: true
+      DB_POSTGRES_HOST: postgres
+      DB_POSTGRES_PORT: "5432"
+      DB_POSTGRES_USER: ${POSTGRES_USER}
+      DB_POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_POSTGRES_NAME: ${POSTGRES_DB}
     networks:
       - nginx
     ports:
@@ -20,6 +24,8 @@ services:
     labels:
       - docker-volume-backup.stop-during-backup=nginx-proxy-manager
     restart: unless-stopped
+    depends_on:
+      - postgres
     volumes:
       - "nginx:/data"
       - "letsencrypt:/etc/letsencrypt"
@@ -27,16 +33,27 @@ services:
     image: "postgres:15-alpine"
     hostname: postgres
     restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - "postgres:/var/lib/postgresql/data"
-
     expose:
       - 5432
     networks:
       - nginx
   backup:
     image: "offen/docker-volume-backup:latest"
-
+    environment:
+      AGE_PUBLIC_KEYS: ${AGE_PUBLIC_KEYS}
+      DROPBOX_REFRESH_TOKEN: ${DROPBOX_REFRESH_TOKEN}
+      DROPBOX_APP_KEY: ${DROPBOX_APP_KEY}
+      DROPBOX_APP_SECRET: ${DROPBOX_APP_SECRET}
+      DROPBOX_REMOTE_PATH: /backups/nginx
+      BACKUP_RETENTION_DAYS: 5
+      BACKUP_JITTER: 1h
+      BACKUP_STOP_DURING_BACKUP_LABEL: nginx-proxy-manager
     volumes:
       - "nginx:/backup/nginx:ro"
       - "letsencrypt:/backup/letsencrypt:ro"
