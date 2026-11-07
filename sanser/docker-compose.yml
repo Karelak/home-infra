@@ -38,9 +38,10 @@ services:
     hostname: sanser
     restart: unless-stopped
     depends_on:
-      - db
-      - redis
-
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     environment:
       WORDPRESS_DB_HOST: db:3306
       WORDPRESS_DB_USER: ${MYSQL_USER}
@@ -53,12 +54,10 @@ services:
       - wordpress:/var/www/html
     networks:
       - wordpress
-
     ports:
       - "10080:80"
 volumes:
   db:
   wordpress:
-  redis:
 networks:
   wordpress:
