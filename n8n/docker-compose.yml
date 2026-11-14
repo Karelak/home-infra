@@ -43,7 +43,7 @@ services:
     restart: "unless-stopped"
     volumes:
       - "n8n:/home/node/.n8n"
-  n8n-runners:
+  runners:
     depends_on:
       n8n:
         condition: "service_healthy"
