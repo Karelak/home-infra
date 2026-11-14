@@ -35,8 +35,8 @@ services:
     hostname: "postgres"
     image: "postgres:15-alpine"
     labels:
-      docker-volume-backup.exec-label: "vaultwarden"
       docker-volume-backup.archive-pre: "/bin/sh -c 'pg_dump -Fc -U $$POSTGRES_USER -d $$POSTGRES_DB -f /tmp/vaultwarden.dump'"
+      docker-volume-backup.exec-label: "vaultwarden"
     networks:
       - "vaultwarden"
     restart: "unless-stopped"
