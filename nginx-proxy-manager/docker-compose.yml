@@ -22,8 +22,6 @@ services:
       timeout: "30s"
     hostname: "nginx-proxy-manager"
     image: "jc21/nginx-proxy-manager:latest"
-    labels:
-      docker-volume-backup.stop-during-backup: "nginx-proxy-manager"
     networks:
       - "nginx"
     ports:
@@ -51,8 +49,6 @@ services:
       timeout: "30s"
     hostname: "postgres"
     image: "postgres:15-alpine"
-    labels:
-      docker-volume-backup.stop-during-backup: "nginx-proxy-manager"
     networks:
       - "nginx"
     restart: "unless-stopped"
