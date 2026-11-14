@@ -12,7 +12,17 @@ services:
       BACKUP_RETENTION_DAYS: 5
       BACKUP_STOP_DURING_BACKUP_LABEL: "vaultwarden"
       EXEC_LABEL: "vaultwarden"
+    healthcheck:
+      interval: "1m30s"
+      retries: 5
+      start_period: "30s"
+      test:
+        - "CMD-SHELL"
+        - "test -f /tmp/last_success && test $$(( $$(date +%s) - $$(cat /tmp/last_success) )) -lt 90000"
+      timeout: "30s"
     image: "offen/docker-volume-backup:latest"
+    labels:
+      docker-volume-backup.prune-post: "/bin/sh -c 'date +%s > /tmp/last_success'"
     restart: "always"
     volumes:
       - "pgdump:/backup/pgdump:ro"
