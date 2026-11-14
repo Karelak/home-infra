@@ -10,6 +10,7 @@ services:
       AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
       BACKUP_JITTER: "1h"
       BACKUP_RETENTION_DAYS: 5
+      BACKUP_STOP_DURING_BACKUP_LABEL: "vaultwarden"
       EXEC_LABEL: "vaultwarden"
     image: "offen/docker-volume-backup:latest"
     restart: "always"
@@ -72,6 +73,8 @@ services:
       timeout: "30s"
     hostname: "vaultwarden"
     image: "vaultwarden/server:latest"
+    labels:
+      docker-volume-backup.stop-during-label: "vaultwarden"
     networks:
       - "vaultwarden"
     ports:
