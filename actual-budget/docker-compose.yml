@@ -9,7 +9,6 @@ services:
       BACKUP_JITTER: "1h"
       BACKUP_RETENTION_DAYS: 5
       BACKUP_STOP_DURING_BACKUP_LABEL: "actual-budget"
-      DROPBOX_REMOTE_PATH: "/backups/actual-budget"
     image: "offen/docker-volume-backup:latest"
     restart: "always"
     volumes:
