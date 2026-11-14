@@ -56,7 +56,7 @@ services:
       start_period: "30s"
       test:
         - "CMD-SHELL"
-        - "wget --spider -q http://localhost:5681/healthz && wget --spider -q http://localhost:5682/healthz"
+        - "wget --spider -q http://localhost:5680/healthz || exit 1"
       timeout: "30s"
     image: "n8nio/runners:latest"
     networks:
