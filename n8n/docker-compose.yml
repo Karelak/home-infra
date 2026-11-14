@@ -121,5 +121,5 @@ services:
     restart: "unless-stopped"
 volumes:
   n8n: null
-  postgres: null
   pgdump: null
+  postgres: null
