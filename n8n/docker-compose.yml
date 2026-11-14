@@ -75,7 +75,7 @@ services:
       start_period: "30s"
       test:
         - "CMD-SHELL"
-        - "pg_isready"
+        - "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
       timeout: "30s"
     hostname: "postgres"
     image: "postgres:17-alpine"
