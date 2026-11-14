@@ -4,12 +4,13 @@ services:
   backup:
     environment:
       AGE_PUBLIC_KEYS: "${AGE_PUBLIC_KEYS}"
+      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
+      AWS_ENDPOINT: "${AWS_ENDPOINT}"
+      AWS_S3_BUCKET_NAME: "${AWS_S3_BUCKET_NAME}"
+      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
       BACKUP_JITTER: "1h"
       BACKUP_RETENTION_DAYS: 5
       BACKUP_STOP_DURING_BACKUP_LABEL: "actual-budget"
-      DROPBOX_APP_KEY: "${DROPBOX_APP_KEY}"
-      DROPBOX_APP_SECRET: "${DROPBOX_APP_SECRET}"
-      DROPBOX_REFRESH_TOKEN: "${DROPBOX_REFRESH_TOKEN}"
       DROPBOX_REMOTE_PATH: "/backups/actual-budget"
     image: "offen/docker-volume-backup:latest"
     restart: "always"
