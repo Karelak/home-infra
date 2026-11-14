@@ -33,3 +33,4 @@ services:
       - "actual-budget:/data"
 volumes:
   actual-budget: null
+  pgdump: null
