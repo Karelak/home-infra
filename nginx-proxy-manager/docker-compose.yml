@@ -10,12 +10,13 @@ services:
       AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
       BACKUP_JITTER: "1h"
       BACKUP_RETENTION_DAYS: 5
-      EXEC_LABEL: "vaultwarden"
+      BACKUP_STOP_DURING_BACKUP_LABEL: "nginx"
+      EXEC_LABEL: "nginx"
     image: "offen/docker-volume-backup:latest"
     restart: "always"
     volumes:
       - "pgdump:/backup/pgdump:ro"
-      - "vaultwarden:/backup/vaultwarden:ro"
+      - "nginx:/backup/nginx:ro"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
   nginx:
     depends_on:
@@ -36,10 +37,10 @@ services:
         - "CMD"
         - "/usr/bin/check-health"
       timeout: "30s"
-    hostname: "nginx-proxy-manager"
+    hostname: "nginx"
     image: "jc21/nginx-proxy-manager:latest"
     labels:
-      docker-volume-backup.stop-during-backup: "nginx-proxy-manager"
+      docker-volume-backup.stop-during-backup: "nginx"
     networks:
       - "nginx"
     ports:
@@ -68,13 +69,16 @@ services:
     hostname: "postgres"
     image: "postgres:15-alpine"
     labels:
-      docker-volume-backup.stop-during-backup: "nginx-proxy-manager"
+      docker-volume-backup.archive-pre: "/bin/sh -c 'pg_dump -Fc -U $$POSTGRES_USER -d $$POSTGRES_DB -f /tmp/nginx.dump'"
+      docker-volume-backup.exec-label: "nginx"
     networks:
       - "nginx"
     restart: "unless-stopped"
     volumes:
       - "postgres:/var/lib/postgresql/data"
+      - "pgdump:/tmp"
 volumes:
   letsencrypt: null
   nginx: null
+  pgdump: null
   postgres: null
