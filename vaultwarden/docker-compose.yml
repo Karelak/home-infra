@@ -1,6 +1,33 @@
 networks:
   vaultwarden: null
 services:
+  backup:
+    environment:
+      AGE_PUBLIC_KEYS: "${AGE_PUBLIC_KEYS}"
+      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
+      AWS_ENDPOINT: "${AWS_ENDPOINT}"
+      AWS_S3_BUCKET_NAME: "${AWS_S3_BUCKET_NAME}"
+      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
+      BACKUP_JITTER: "1h"
+      BACKUP_RETENTION_DAYS: 5
+      BACKUP_STOP_DURING_BACKUP_LABEL: "vaultwarden"
+      EXEC_LABEL: "vaultwarden"
+    healthcheck:
+      interval: "1m30s"
+      retries: 5
+      start_period: "30s"
+      test:
+        - "CMD-SHELL"
+        - "test -f /tmp/last_success && test $$(( $$(date +%s) - $$(cat /tmp/last_success) )) -lt 90000"
+      timeout: "30s"
+    image: "offen/docker-volume-backup:latest"
+    labels:
+      docker-volume-backup.prune-post: "/bin/sh -c 'date +%s > /tmp/last_success'"
+    restart: "always"
+    volumes:
+      - "pgdump:/backup/pgdump:ro"
+      - "vaultwarden:/backup/vaultwarden:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
   postgres:
     environment:
       POSTGRES_DB: "${POSTGRES_DB}"
@@ -18,6 +45,9 @@ services:
       timeout: "30s"
     hostname: "postgres"
     image: "postgres:15-alpine"
+    labels:
+      docker-volume-backup.archive-pre: "/bin/sh -c 'pg_dump -Fc -U $$POSTGRES_USER -d $$POSTGRES_DB -f /tmp/vaultwarden.dump'"
+      docker-volume-backup.exec-label: "vaultwarden"
     networks:
       - "vaultwarden"
     restart: "unless-stopped"
@@ -53,6 +83,8 @@ services:
       timeout: "30s"
     hostname: "vaultwarden"
     image: "vaultwarden/server:latest"
+    labels:
+      docker-volume-backup.stop-during-backup: "vaultwarden"
     networks:
       - "vaultwarden"
     ports:

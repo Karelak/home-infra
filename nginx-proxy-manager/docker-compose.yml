@@ -1,6 +1,34 @@
 networks:
   nginx: null
 services:
+  backup:
+    environment:
+      AGE_PUBLIC_KEYS: "${AGE_PUBLIC_KEYS}"
+      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
+      AWS_ENDPOINT: "${AWS_ENDPOINT}"
+      AWS_S3_BUCKET_NAME: "${AWS_S3_BUCKET_NAME}"
+      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
+      BACKUP_JITTER: "1h"
+      BACKUP_RETENTION_DAYS: 5
+      BACKUP_STOP_DURING_BACKUP_LABEL: "nginx"
+      EXEC_LABEL: "nginx"
+    healthcheck:
+      interval: "1m30s"
+      retries: 5
+      start_period: "30s"
+      test:
+        - "CMD-SHELL"
+        - "test -f /tmp/last_success && test $$(( $$(date +%s) - $$(cat /tmp/last_success) )) -lt 90000"
+      timeout: "30s"
+    image: "offen/docker-volume-backup:latest"
+    labels:
+      docker-volume-backup.prune-post: "/bin/sh -c 'date +%s > /tmp/last_success'"
+    restart: "always"
+    volumes:
+      - "pgdump:/backup/pgdump:ro"
+      - "nginx:/backup/nginx:ro"
+      - "letsencrypt:/backup/letsencrypt:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
   nginx:
     depends_on:
       postgres:
@@ -20,8 +48,10 @@ services:
         - "CMD"
         - "/usr/bin/check-health"
       timeout: "30s"
-    hostname: "nginx-proxy-manager"
+    hostname: "nginx"
     image: "jc21/nginx-proxy-manager:latest"
+    labels:
+      docker-volume-backup.stop-during-backup: "nginx"
     networks:
       - "nginx"
     ports:
@@ -49,12 +79,17 @@ services:
       timeout: "30s"
     hostname: "postgres"
     image: "postgres:15-alpine"
+    labels:
+      docker-volume-backup.archive-pre: "/bin/sh -c 'pg_dump -Fc -U $$POSTGRES_USER -d $$POSTGRES_DB -f /tmp/nginx.dump'"
+      docker-volume-backup.exec-label: "nginx"
     networks:
       - "nginx"
     restart: "unless-stopped"
     volumes:
       - "postgres:/var/lib/postgresql/data"
+      - "pgdump:/tmp"
 volumes:
   letsencrypt: null
   nginx: null
+  pgdump: null
   postgres: null

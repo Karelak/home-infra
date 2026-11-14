@@ -1,4 +1,29 @@
 services:
+  backup:
+    environment:
+      AGE_PUBLIC_KEYS: "${AGE_PUBLIC_KEYS}"
+      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
+      AWS_ENDPOINT: "${AWS_ENDPOINT}"
+      AWS_S3_BUCKET_NAME: "${AWS_S3_BUCKET_NAME}"
+      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
+      BACKUP_JITTER: "1h"
+      BACKUP_RETENTION_DAYS: 5
+      BACKUP_STOP_DURING_BACKUP_LABEL: "actual-budget"
+    healthcheck:
+      interval: "1m30s"
+      retries: 5
+      start_period: "30s"
+      test:
+        - "CMD-SHELL"
+        - "test -f /tmp/last_success && test $$(( $$(date +%s) - $$(cat /tmp/last_success) )) -lt 90000"
+      timeout: "30s"
+    image: "offen/docker-volume-backup:latest"
+    labels:
+      docker-volume-backup.prune-post: "/bin/sh -c 'date +%s > /tmp/last_success'"
+    restart: "always"
+    volumes:
+      - "actual-budget:/backup/actual-budget:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
   server:
     healthcheck:
       interval: "1m30s"
@@ -9,6 +34,8 @@ services:
         - "node scripts/health-check.js"
       timeout: "30s"
     image: "actualbudget/actual-server:latest"
+    labels:
+      docker-volume-backup.stop-during-backup: "actual-budget"
     ports:
       - "5006:5006"
     restart: "unless-stopped"
@@ -16,3 +43,4 @@ services:
       - "actual-budget:/data"
 volumes:
   actual-budget: null
+  pgdump: null
