@@ -10,11 +10,13 @@ services:
       AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
       BACKUP_JITTER: "1h"
       BACKUP_RETENTION_DAYS: 5
-      BACKUP_STOP_DURING_BACKUP_LABEL: "actual-budget"
+      BACKUP_STOP_DURING_BACKUP_LABEL: "n8n"
+      EXEC_LABEL: "n8n"
     image: "offen/docker-volume-backup:latest"
     restart: "always"
     volumes:
-      - "actual-budget:/backup/actual-budget:ro"
+      - "pgdump:/backup/pgdump:ro"
+      - "n8n:/backup/n8n:ro"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
   n8n:
     depends_on:
@@ -51,6 +53,8 @@ services:
       timeout: "30s"
     hostname: "n8n"
     image: "n8nio/n8n:latest"
+    labels:
+      docker-volume-backup.stop-during-label: "n8n"
     networks:
       - "n8n"
     ports:
@@ -75,11 +79,15 @@ services:
       timeout: "30s"
     hostname: "postgres"
     image: "postgres:17-alpine"
+    labels:
+      docker-volume-backup.archive-pre: "/bin/sh -c 'pg_dump -Fc -U $$POSTGRES_USER -d $$POSTGRES_DB -f /tmp/n8n.dump'"
+      docker-volume-backup.exec-label: "n8n"
     networks:
       - "n8n"
     restart: "unless-stopped"
     volumes:
       - "postgres:/var/lib/postgresql/data"
+      - "pgdump:/tmp"
   runners:
     depends_on:
       n8n:
@@ -96,6 +104,8 @@ services:
         - "wget --spider -q http://localhost:5680/healthz || exit 1"
       timeout: "30s"
     image: "n8nio/runners:latest"
+    labels:
+      docker-volume-backup.stop-during-label: "n8n"
     networks:
       - "n8n"
     restart: "unless-stopped"
