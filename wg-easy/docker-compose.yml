@@ -14,8 +14,6 @@ services:
       BACKUP_RETENTION_DAYS: 5
       BACKUP_STOP_DURING_BACKUP_LABEL: "wg-easy"
     image: "offen/docker-volume-backup:latest"
-    labels:
-      docker-volume-backup.prune-post: "/bin/sh -c 'date +%s > /tmp/last_success'"
     restart: "always"
     volumes:
       - "etc_wireguard:/backup/etc_wireguard:ro"

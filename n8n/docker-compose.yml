@@ -13,8 +13,6 @@ services:
       BACKUP_STOP_DURING_BACKUP_LABEL: "n8n"
       EXEC_LABEL: "n8n"
     image: "offen/docker-volume-backup:latest"
-    labels:
-      docker-volume-backup.prune-post: "/bin/sh -c 'date +%s > /tmp/last_success'"
     restart: "always"
     volumes:
       - "pgdump:/backup/pgdump:ro"

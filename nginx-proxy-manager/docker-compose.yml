@@ -13,8 +13,6 @@ services:
       BACKUP_STOP_DURING_BACKUP_LABEL: "nginx"
       EXEC_LABEL: "nginx"
     image: "offen/docker-volume-backup:latest"
-    labels:
-      docker-volume-backup.prune-post: "/bin/sh -c 'date +%s > /tmp/last_success'"
     restart: "always"
     volumes:
       - "pgdump:/backup/pgdump:ro"
