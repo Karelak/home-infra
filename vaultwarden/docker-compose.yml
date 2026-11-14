@@ -84,7 +84,7 @@ services:
     hostname: "vaultwarden"
     image: "vaultwarden/server:latest"
     labels:
-      docker-volume-backup.stop-during-label: "vaultwarden"
+      docker-volume-backup.stop-during-backup: "vaultwarden"
     networks:
       - "vaultwarden"
     ports:

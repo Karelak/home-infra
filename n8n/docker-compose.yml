@@ -64,7 +64,7 @@ services:
     hostname: "n8n"
     image: "n8nio/n8n:latest"
     labels:
-      docker-volume-backup.stop-during-label: "n8n"
+      docker-volume-backup.stop-during-backup: "n8n"
     networks:
       - "n8n"
     ports:
@@ -122,3 +122,4 @@ services:
 volumes:
   n8n: null
   postgres: null
+  pgdump: null

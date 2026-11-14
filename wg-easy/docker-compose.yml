@@ -26,7 +26,7 @@ services:
       docker-volume-backup.prune-post: "/bin/sh -c 'date +%s > /tmp/last_success'"
     restart: "always"
     volumes:
-      - "wg-easy:/backup/wg-easy:ro"
+      - "wg-easy:/backup/etc_wireguard:ro"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
   wg-easy:
     cap_add:
@@ -42,6 +42,8 @@ services:
     image: "ghcr.io/wg-easy/wg-easy:15"
     networks:
       - "wg"
+    labels:
+      docker-volume-backup.stop-during-backup: "wg-easy"
     ports:
       - "51820:51820/udp"
       - "51821:51821/tcp"
