@@ -6,16 +6,17 @@ services:
       AGE_PUBLIC_KEYS: "${AGE_PUBLIC_KEYS}"
       BACKUP_JITTER: "1h"
       BACKUP_RETENTION_DAYS: 5
-      BACKUP_STOP_DURING_BACKUP_LABEL: "vaultwarden"
       DROPBOX_APP_KEY: "${DROPBOX_APP_KEY}"
       DROPBOX_APP_SECRET: "${DROPBOX_APP_SECRET}"
       DROPBOX_REFRESH_TOKEN: "${DROPBOX_REFRESH_TOKEN}"
       DROPBOX_REMOTE_PATH: "/backups/vaultwarden"
+      EXEC_LABEL: "vaultwarden"
     image: "offen/docker-volume-backup:latest"
     restart: "always"
     volumes:
-      - "postgres:/backup/postgres:ro"
+      - "pgdump:/backup/pgdump:ro"
       - "vaultwarden:/backup/vaultwarden:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
   postgres:
     environment:
       POSTGRES_DB: "${POSTGRES_DB}"
@@ -29,15 +30,19 @@ services:
       start_period: "30s"
       test:
         - "CMD-SHELL"
-        - "pg_isready"
+        - "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
       timeout: "30s"
     hostname: "postgres"
     image: "postgres:15-alpine"
+    labels:
+      docker-volume-backup.exec-label: "vaultwarden"
+      docker-volume-backup.archive-pre: "/bin/sh -c 'pg_dump -Fc -U $$POSTGRES_USER -d $$POSTGRES_DB -f /tmp/vaultwarden.dump'"
     networks:
       - "vaultwarden"
     restart: "unless-stopped"
     volumes:
       - "postgres:/var/lib/postgresql/data"
+      - "pgdump:/tmp"
   vaultwarden:
     depends_on:
       postgres:
@@ -67,8 +72,6 @@ services:
       timeout: "30s"
     hostname: "vaultwarden"
     image: "vaultwarden/server:latest"
-    labels:
-      docker-volume-backup.stop-during-backup: "vaultwarden"
     networks:
       - "vaultwarden"
     ports:
@@ -78,5 +81,6 @@ services:
     volumes:
       - "vaultwarden:/data"
 volumes:
+  pgdump: null
   postgres: null
   vaultwarden: null
