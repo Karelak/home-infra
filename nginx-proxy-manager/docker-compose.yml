@@ -1,23 +1,6 @@
 networks:
   nginx: null
 services:
-  backup:
-    environment:
-      AGE_PUBLIC_KEYS: "${AGE_PUBLIC_KEYS}"
-      BACKUP_JITTER: "1h"
-      BACKUP_RETENTION_DAYS: 5
-      BACKUP_STOP_DURING_BACKUP_LABEL: "nginx-proxy-manager"
-      DROPBOX_APP_KEY: "${DROPBOX_APP_KEY}"
-      DROPBOX_APP_SECRET: "${DROPBOX_APP_SECRET}"
-      DROPBOX_REFRESH_TOKEN: "${DROPBOX_REFRESH_TOKEN}"
-      DROPBOX_REMOTE_PATH: "/backups/nginx"
-    image: "offen/docker-volume-backup:latest"
-    restart: "always"
-    volumes:
-      - "nginx:/backup/nginx:ro"
-      - "letsencrypt:/backup/letsencrypt:ro"
-      - "postgres:/backup/postgres:ro"
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
   nginx:
     depends_on:
       postgres:
