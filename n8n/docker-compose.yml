@@ -115,7 +115,7 @@ services:
       timeout: "30s"
     image: "n8nio/runners:latest"
     labels:
-      docker-volume-backup.stop-during-label: "n8n"
+      docker-volume-backup.stop-during-backup: "n8n"
     networks:
       - "n8n"
     restart: "unless-stopped"
