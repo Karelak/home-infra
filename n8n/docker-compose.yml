@@ -31,9 +31,11 @@ services:
       DB_TYPE: "postgresdb"
       GENERIC_TIMEZONE: "Europe/London"
       N8N_BLOCK_ENV_ACCESS_IN_NODE: true
+      N8N_EDITOR_BASE_URL: "${N8N_EDITOR_BASE_URL}"
       N8N_ENCRYPTION_KEY: "${N8N_ENCRYPTION_KEY}"
       N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: true
       N8N_GIT_NODE_DISABLE_BARE_REPOS: true
+      N8N_HOST: "${N8N_HOST}"
       N8N_MIGRATE_FS_STORAGE_PATH: true
       N8N_NATIVE_PYTHON_RUNNER: true
       N8N_PROTOCOL: "https"
@@ -42,6 +44,7 @@ services:
       N8N_RUNNERS_BROKER_LISTEN_ADDRESS: "0.0.0.0"
       N8N_RUNNERS_MODE: "external"
       N8N_SKIP_AUTH_ON_OAUTH_CALLBACK: false
+      N8N_WEBHOOK_URL: "${N8N_EDITOR_BASE_URL}"
       NODE_ENV: "production"
     healthcheck:
       interval: "1m30s"
