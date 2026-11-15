@@ -9,6 +9,7 @@ services:
       BACKUP_JITTER: "1h"
       BACKUP_RETENTION_DAYS: 5
       BACKUP_STOP_DURING_BACKUP_LABEL: "actual-budget"
+      EXEC_LABEL: "actual-budget"
     image: "offen/docker-volume-backup:latest"
     restart: "always"
     volumes:
@@ -25,6 +26,7 @@ services:
       timeout: "30s"
     image: "actualbudget/actual-server:latest"
     labels:
+      docker-volume-backup.exec-label: "actual-budget"
       docker-volume-backup.stop-during-backup: "actual-budget"
     ports:
       - "5006:5006"

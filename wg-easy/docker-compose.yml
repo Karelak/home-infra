@@ -13,6 +13,7 @@ services:
       BACKUP_JITTER: "1h"
       BACKUP_RETENTION_DAYS: 5
       BACKUP_STOP_DURING_BACKUP_LABEL: "wg-easy"
+      EXEC_LABEL: "wg-easy"
     image: "offen/docker-volume-backup:latest"
     restart: "always"
     volumes:
@@ -31,6 +32,7 @@ services:
       timeout: "30s"
     image: "ghcr.io/wg-easy/wg-easy:15"
     labels:
+      docker-volume-backup.exec-label: "wg-easy"
       docker-volume-backup.stop-during-backup: "wg-easy"
     networks:
       - "wg"
