@@ -1,6 +1,6 @@
 # File created using '.gitignore Generator' for Visual Studio Code: https://bit.ly/vscode-gig
-# Created by https://www.toptal.com/developers/gitignore/api/windows,visualstudiocode,macos,linux,git,dotenv,data,terraform
-# Edit at https://www.toptal.com/developers/gitignore?templates=windows,visualstudiocode,macos,linux,git,dotenv,data,terraform
+# Created by https://www.toptal.com/developers/gitignore/api/windows,visualstudiocode,terraform,ssh,macos,linux,git,dotenv,data,executable
+# Edit at https://www.toptal.com/developers/gitignore?templates=windows,visualstudiocode,terraform,ssh,macos,linux,git,dotenv,data,executable
 
 ### Data ###
 *.csv
@@ -18,6 +18,18 @@
 
 ### dotenv ###
 .env
+
+### Executable ###
+*.app
+*.bat
+*.cgi
+*.com
+*.exe
+*.gadget
+*.jar
+*.pif
+*.vb
+*.wsf
 
 ### Git ###
 # Created by git for backups. To disable backups in Git:
@@ -80,6 +92,11 @@ Temporary Items
 ### macOS Patch ###
 # iCloud generated files
 *.icloud
+
+### SSH ###
+**/.ssh/id_*
+**/.ssh/*_id_*
+**/.ssh/known_hosts
 
 ### Terraform ###
 # Local .terraform directories
@@ -162,7 +179,7 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# End of https://www.toptal.com/developers/gitignore/api/windows,visualstudiocode,macos,linux,git,dotenv,data,terraform
+# End of https://www.toptal.com/developers/gitignore/api/windows,visualstudiocode,terraform,ssh,macos,linux,git,dotenv,data,executable
 
 # Custom rules (everything added below won't be overriden by 'Generate .gitignore File' if you use 'Update' option)
 
