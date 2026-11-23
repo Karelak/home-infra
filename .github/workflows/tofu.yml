@@ -23,8 +23,8 @@ jobs:
     if: github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: opentofu/setup-opentofu@v1
+      - uses: actions/checkout@v4.4.0
+      - uses: opentofu/setup-opentofu@v1.0.8
         with:
           tofu_version: "~1.10"
       - name: Write OCI key
@@ -41,8 +41,8 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
-      - uses: actions/checkout@v4
-      - uses: opentofu/setup-opentofu@v1
+      - uses: actions/checkout@v4.4.0
+      - uses: opentofu/setup-opentofu@v1.0.8
         with:
           tofu_version: "~1.10"
       - name: Write OCI key
