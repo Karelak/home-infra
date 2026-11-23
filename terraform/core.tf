@@ -3,7 +3,7 @@
 resource "oci_core_subnet" "export_subnet-20251224-1610" {
   #availability_domain = <<Optional value not found in discovery>>
   cidr_block     = "10.0.0.0/24"
-  compartment_id = oci_license_manager_configuration.export_configuration.id
+  compartment_id = var.compartment_ocid
   defined_tags = {
     "Oracle-Tags.CreatedBy" = "default/partkaarel2@gmail.com"
     "Oracle-Tags.CreatedOn" = "2025-12-24T14:12:29.451Z"
@@ -29,7 +29,7 @@ resource "oci_core_subnet" "export_subnet-20251224-1610" {
 }
 
 resource "oci_core_internet_gateway" "export_Internet-Gateway-vcn-20251224-1610" {
-  compartment_id = oci_license_manager_configuration.export_configuration.id
+  compartment_id = var.compartment_ocid
   defined_tags = {
     "Oracle-Tags.CreatedBy" = "default/partkaarel2@gmail.com"
     "Oracle-Tags.CreatedOn" = "2025-12-24T14:12:28.180Z"
@@ -48,7 +48,7 @@ resource "oci_core_vcn" "export_vcn-20251224-1610" {
   cidr_blocks = [
     "10.0.0.0/16",
   ]
-  compartment_id = oci_license_manager_configuration.export_configuration.id
+  compartment_id = var.compartment_ocid
   defined_tags = {
     "Oracle-Tags.CreatedBy" = "default/partkaarel2@gmail.com"
     "Oracle-Tags.CreatedOn" = "2025-12-24T14:12:27.231Z"
@@ -66,7 +66,7 @@ resource "oci_core_vcn" "export_vcn-20251224-1610" {
 }
 
 resource "oci_core_public_ip" "export_vps-public-ip" {
-  compartment_id = oci_license_manager_configuration.export_configuration.id
+  compartment_id = var.compartment_ocid
   defined_tags = {
     "Oracle-Tags.CreatedBy" = "default/partkaarel2@gmail.com"
     "Oracle-Tags.CreatedOn" = "2025-12-24T14:14:18.352Z"
@@ -80,7 +80,7 @@ resource "oci_core_public_ip" "export_vps-public-ip" {
 }
 
 resource "oci_core_default_dhcp_options" "export_Default-DHCP-Options-for-vcn-20251224-1610" {
-  compartment_id = oci_license_manager_configuration.export_configuration.id
+  compartment_id = var.compartment_ocid
   defined_tags = {
     "Oracle-Tags.CreatedBy" = "default/partkaarel2@gmail.com"
     "Oracle-Tags.CreatedOn" = "2025-12-24T14:12:27.231Z"
@@ -108,7 +108,7 @@ resource "oci_core_default_dhcp_options" "export_Default-DHCP-Options-for-vcn-20
 }
 
 resource "oci_core_default_route_table" "export_Default-Route-Table-for-vcn-20251224-1610" {
-  compartment_id = oci_license_manager_configuration.export_configuration.id
+  compartment_id = var.compartment_ocid
   defined_tags = {
     "Oracle-Tags.CreatedBy" = "default/partkaarel2@gmail.com"
     "Oracle-Tags.CreatedOn" = "2025-12-24T14:12:27.231Z"
@@ -127,7 +127,7 @@ resource "oci_core_default_route_table" "export_Default-Route-Table-for-vcn-2025
 }
 
 resource "oci_core_default_security_list" "export_Default-Security-List-for-vcn-20251224-1610" {
-  compartment_id = oci_license_manager_configuration.export_configuration.id
+  compartment_id = var.compartment_ocid
   defined_tags = {
     "Oracle-Tags.CreatedBy" = "default/partkaarel2@gmail.com"
     "Oracle-Tags.CreatedOn" = "2025-12-24T14:12:27.231Z"
@@ -158,212 +158,14 @@ resource "oci_core_default_security_list" "export_Default-Security-List-for-vcn-
   manage_default_resource_id = oci_core_vcn.export_vcn-20251224-1610.default_security_list_id
 }
 
-resource "oci_core_private_ip" "export_ReverseConnectionIp" {
-  cidr_prefix_length = "32"
-  defined_tags = {
-  }
-  display_name = "ReverseConnectionIp"
-  freeform_tags = {
-  }
-  #hostname_label = <<Optional value not found in discovery>>
-  ip_address = "10.0.0.30"
-  #ipv4subnet_cidr_at_creation = <<Optional value not found in discovery>>
-  lifetime = "EPHEMERAL"
-  #route_table_id = <<Optional value not found in discovery>>
-  subnet_id = oci_core_subnet.export_subnet-20251224-1610.id
-  #vlan_id = <<Optional value not found in discovery>>
-  vnic_id = "ocid1.vnic.oc1.uk-london-1.abwgiljs747ghjqgsoew6zpob4tkverynvquzfhm3rmzlm73xrehx6lbyrta"
-}
 
-resource "oci_core_private_ip" "export_vnic" {
-  cidr_prefix_length = "32"
-  defined_tags = {
-    "Oracle-Tags.CreatedBy" = "default/partkaarel2@gmail.com"
-    "Oracle-Tags.CreatedOn" = "2026-01-23T19:52:06.060Z"
-  }
-  display_name = "vnic"
-  freeform_tags = {
-  }
-  hostname_label = "vnic"
-  ip_address     = "10.0.0.155"
-  #ipv4subnet_cidr_at_creation = <<Optional value not found in discovery>>
-  lifetime = "EPHEMERAL"
-  #route_table_id = <<Optional value not found in discovery>>
-  subnet_id = oci_core_subnet.export_subnet-20251224-1610.id
-  #vlan_id = <<Optional value not found in discovery>>
-  vnic_id = "ocid1.vnic.oc1.uk-london-1.abwgiljrnjzm2xyiyefbnl2jwzxhkpx4leby7lkaml3qvg5byxzkxosmneaa"
-}
 
-resource "oci_core_private_ip" "export_RCE_PE_SEC_IP" {
-  cidr_prefix_length = "32"
-  defined_tags = {
-    "Oracle-Tags.CreatedBy" = "rce"
-    "Oracle-Tags.CreatedOn" = "2026-08-15T10:45:18.360Z"
-  }
-  display_name = "RCE_PE_SEC_IP"
-  freeform_tags = {
-  }
-  #hostname_label = <<Optional value not found in discovery>>
-  ip_address = "10.0.0.187"
-  #ipv4subnet_cidr_at_creation = <<Optional value not found in discovery>>
-  lifetime = "EPHEMERAL"
-  #route_table_id = <<Optional value not found in discovery>>
-  subnet_id = oci_core_subnet.export_subnet-20251224-1610.id
-  #vlan_id = <<Optional value not found in discovery>>
-  vnic_id = "ocid1.vnic.oc1.uk-london-1.abwgiljs747ghjqgsoew6zpob4tkverynvquzfhm3rmzlm73xrehx6lbyrta"
-}
 
-resource "oci_core_private_ip" "export_ocid1-bastion-oc1-uk-london-1-amaaaaaav7fjefia4ujb6a7nrdvepqxjhfpuuvq6mvukz5g7q3z73wgtdlnq" {
-  cidr_prefix_length = "32"
-  defined_tags = {
-  }
-  display_name = oci_bastion_bastion.export_Bastion202608151143.id
-  freeform_tags = {
-  }
-  hostname_label = "host-10-0-0-209"
-  ip_address     = "10.0.0.209"
-  #ipv4subnet_cidr_at_creation = <<Optional value not found in discovery>>
-  lifetime = "EPHEMERAL"
-  #route_table_id = <<Optional value not found in discovery>>
-  subnet_id = oci_core_subnet.export_subnet-20251224-1610.id
-  #vlan_id = <<Optional value not found in discovery>>
-  vnic_id = "ocid1.vnic.oc1.uk-london-1.abwgiljs747ghjqgsoew6zpob4tkverynvquzfhm3rmzlm73xrehx6lbyrta"
-}
-
-resource "oci_core_instance_configuration" "export_instance-config-20240730-0918" {
-  compartment_id = oci_license_manager_configuration.export_configuration.id
-  defined_tags = {
-    "Oracle-Tags.CreatedBy" = "default/partkaarel2@gmail.com"
-    "Oracle-Tags.CreatedOn" = "2024-07-30T06:18:05.825Z"
-  }
-  display_name = "instance-config-20240730-0918"
-  freeform_tags = {
-  }
-  instance_details {
-    instance_type = "compute"
-    launch_details {
-      agent_config {
-        are_all_plugins_disabled = "false"
-        is_management_disabled   = "false"
-        is_monitoring_disabled   = "false"
-        plugins_config {
-          desired_state = "ENABLED"
-          name          = "Compute Instance Monitoring"
-        }
-        plugins_config {
-          desired_state = "ENABLED"
-          name          = "Bastion"
-        }
-      }
-      availability_config {
-        #is_live_migration_preferred = <<Optional value not found in discovery>>
-        recovery_action = "RESTORE_INSTANCE"
-      }
-      #availability_domain = <<Optional value not found in discovery>>
-      #capacity_reservation_id = <<Optional value not found in discovery>>
-      #cluster_placement_group_id = <<Optional value not found in discovery>>
-      compartment_id = oci_license_manager_configuration.export_configuration.id
-      #compute_cluster_id = <<Optional value not found in discovery>>
-      create_vnic_details {
-        #assign_ipv6ip = <<Optional value not found in discovery>>
-        assign_private_dns_record = "true"
-        assign_public_ip          = "true"
-        defined_tags = {
-          "Oracle-Tags.CreatedBy" = "default/partkaarel2@gmail.com"
-          "Oracle-Tags.CreatedOn" = "2024-07-29T21:42:01.854Z"
-        }
-        display_name = "instance-20240729-2242"
-        freeform_tags = {
-        }
-        #hostname_label = <<Optional value not found in discovery>>
-        nsg_ids = [
-        ]
-        #private_ip = <<Optional value not found in discovery>>
-        #private_ip_id = <<Optional value not found in discovery>>
-        #security_attributes = <<Optional value not found in discovery>>
-        skip_source_dest_check = "true"
-        #subnet_cidr = <<Optional value not found in discovery>>
-        subnet_id = "ocid1.subnet.oc1.uk-london-1.aaaaaaaahbobg5ab2ftt5yxfll5mmycjccsb2qjco64lrv4psvlzer2el3kq"
-      }
-      #dedicated_vm_host_id = <<Optional value not found in discovery>>
-      defined_tags = {
-        "Oracle-Tags.CreatedBy" = "default/partkaarel2@gmail.com"
-        "Oracle-Tags.CreatedOn" = "2024-07-29T21:42:01.708Z"
-      }
-      display_name = "script-server"
-      extended_metadata = {
-      }
-      #fault_domain = <<Optional value not found in discovery>>
-      freeform_tags = {
-      }
-      instance_options {
-        are_legacy_imds_endpoints_disabled = "false"
-      }
-      #ipxe_script = <<Optional value not found in discovery>>
-      #is_ai_enterprise_enabled = <<Optional value not found in discovery>>
-      is_pv_encryption_in_transit_enabled = "false"
-      launch_mode                         = "PARAVIRTUALIZED"
-      launch_options {
-        boot_volume_type = ""
-        firmware         = ""
-        #is_consistent_volume_naming_enabled = <<Optional value not found in discovery>>
-        #is_encryption_in_transit_enabled = <<Optional value not found in discovery>>
-        #is_pv_encryption_in_transit_enabled = <<Optional value not found in discovery>>
-        network_type            = "PARAVIRTUALIZED"
-        remote_data_volume_type = ""
-      }
-      metadata = {
-        "ssh_authorized_keys" = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJbVltefr31LFDBZUd0Ek2MwipQp/GkZQsNWTQJFXOeS partkaarel@gmail.com"
-      }
-      #placement_constraint_details = <<Optional value not found in discovery>>
-      #platform_config = <<Optional value not found in discovery>>
-      #preemptible_instance_config = <<Optional value not found in discovery>>
-      preferred_maintenance_action = ""
-      #security_attributes = <<Optional value not found in discovery>>
-      shape = "VM.Standard.A1.Flex"
-      shape_config {
-        baseline_ocpu_utilization = ""
-        #local_volume_size_in_gbs = <<Optional value not found in discovery>>
-        memory_in_gbs = "24"
-        #nvmes = <<Optional value not found in discovery>>
-        ocpus               = "4"
-        resource_management = ""
-        #vcpus = <<Optional value not found in discovery>>
-      }
-      source_details {
-        #boot_volume_id = <<Optional value not found in discovery>>
-        boot_volume_size_in_gbs = "200"
-        boot_volume_vpus_per_gb = "10"
-        image_id                = "ocid1.image.oc1.uk-london-1.aaaaaaaa6t7d5j73tpw2znpdusg3vopy5wxaxgbplkpuphkh6avafelhlknq"
-        #instance_source_image_filter_details = <<Optional value not found in discovery>>
-        #kms_key_id = <<Optional value not found in discovery>>
-        source_type = "image"
-      }
-    }
-    #options = <<Optional value not found in discovery>>
-  }
-  #instance_id = <<Optional value not found in discovery>>
-}
-
-resource "oci_core_instance_maintenance_event" "export_instance_maintenance_event" {
-  #alternative_resolution_action = <<Optional value not found in discovery>>
-  #can_delete_local_storage = <<Optional value not found in discovery>>
-  defined_tags = {
-  }
-  #display_name = <<Optional value not found in discovery>>
-  freeform_tags = {
-  }
-  instance_maintenance_event_id = "<placeholder for missing required attribute>" #Required attribute not found in discovery, placeholder value set to avoid plan failure
-  time_window_start             = "2026-04-08T06:41:52.902Z"
-
-  # Required attributes that were not found in discovery have been added to lifecycle ignore_changes
-  # This is done to avoid terraform plan failure for the existing infrastructure
-  lifecycle {
-    ignore_changes = [instance_maintenance_event_id]
-  }
-}
 
 resource "oci_core_instance" "export_vps" {
+  lifecycle {
+    ignore_changes = [source_details]
+  }
   agent_config {
     are_all_plugins_disabled = "false"
     is_management_disabled   = "false"
@@ -417,7 +219,7 @@ resource "oci_core_instance" "export_vps" {
   availability_domain = var.availability_domain--NHmJ-UK-LONDON-1-AD-1
   #capacity_reservation_id = <<Optional value not found in discovery>>
   #cluster_placement_group_id = <<Optional value not found in discovery>>
-  compartment_id = oci_license_manager_configuration.export_configuration.id
+  compartment_id = var.compartment_ocid
   #compute_cluster_id = <<Optional value not found in discovery>>
   create_vnic_details {
     #assign_ipv6ip = <<Optional value not found in discovery>>
