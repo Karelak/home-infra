@@ -6,6 +6,9 @@ on:
       - "terraform/**"
       - ".github/workflows/tofu.yml"
 
+permissions:
+  contents: read
+
 concurrency:
   group: tofu
   cancel-in-progress: false
@@ -28,10 +31,13 @@ jobs:
         with:
           tofu_version: "~1.10"
       - name: Write OCI key
+        env:
+          OCI_PRIVATE_KEY: ${{ secrets.OCI_PRIVATE_KEY }}
         run: |
-          echo "${{ secrets.OCI_PRIVATE_KEY }}" > "$RUNNER_TEMP/oci.pem"
+          printf '%s\n' "$OCI_PRIVATE_KEY" > "$RUNNER_TEMP/oci.pem"
           chmod 600 "$RUNNER_TEMP/oci.pem"
           echo "TF_VAR_private_key_path=$RUNNER_TEMP/oci.pem" >> "$GITHUB_ENV"
+      - run: tofu fmt -check -recursive
       - run: tofu init -input=false
       - run: tofu validate
       - run: tofu plan -input=false -lock-timeout=5m
@@ -46,8 +52,10 @@ jobs:
         with:
           tofu_version: "~1.10"
       - name: Write OCI key
+        env:
+          OCI_PRIVATE_KEY: ${{ secrets.OCI_PRIVATE_KEY }}
         run: |
-          echo "${{ secrets.OCI_PRIVATE_KEY }}" > "$RUNNER_TEMP/oci.pem"
+          printf '%s\n' "$OCI_PRIVATE_KEY" > "$RUNNER_TEMP/oci.pem"
           chmod 600 "$RUNNER_TEMP/oci.pem"
           echo "TF_VAR_private_key_path=$RUNNER_TEMP/oci.pem" >> "$GITHUB_ENV"
       - run: tofu init -input=false
