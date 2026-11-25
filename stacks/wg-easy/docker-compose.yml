@@ -1,0 +1,53 @@
+networks:
+  wg:
+    driver: "bridge"
+    enable_ipv6: false
+services:
+  backup:
+    environment:
+      AGE_PUBLIC_KEYS: "${AGE_PUBLIC_KEYS}"
+      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
+      AWS_ENDPOINT: "${AWS_ENDPOINT}"
+      AWS_S3_BUCKET_NAME: "${AWS_S3_BUCKET_NAME}"
+      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
+      BACKUP_JITTER: "1h"
+      BACKUP_RETENTION_DAYS: 5
+      BACKUP_STOP_DURING_BACKUP_LABEL: "wg-easy"
+      EXEC_LABEL: "wg-easy"
+    image: "offen/docker-volume-backup:latest"
+    restart: "always"
+    volumes:
+      - "etc_wireguard:/backup/etc_wireguard:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+  wg-easy:
+    cap_add:
+      - "NET_ADMIN"
+      - "SYS_MODULE"
+    environment:
+      INSECURE: "${INSECURE}"
+    healthcheck:
+      interval: "1m30s"
+      retries: 5
+      start_period: "30s"
+      timeout: "30s"
+    image: "ghcr.io/wg-easy/wg-easy:15"
+    labels:
+      docker-volume-backup.exec-label: "wg-easy"
+      docker-volume-backup.stop-during-backup: "wg-easy"
+    networks:
+      - "wg"
+    ports:
+      - "51820:51820/udp"
+      - "51821:51821/tcp"
+    restart: "unless-stopped"
+    sysctls:
+      net.ipv4.conf.all.src_valid_mark: 1
+      net.ipv4.ip_forward: 1
+      net.ipv6.conf.all.disable_ipv6: 0
+      net.ipv6.conf.all.forwarding: 1
+      net.ipv6.conf.default.forwarding: 1
+    volumes:
+      - "etc_wireguard:/etc/wireguard"
+      - "/lib/modules:/lib/modules:ro"
+volumes:
+  etc_wireguard: null

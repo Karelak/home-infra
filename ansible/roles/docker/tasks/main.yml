@@ -1,0 +1,69 @@
+- name: Check for an existing Docker Compose v2 plugin
+  ansible.builtin.command: docker compose version --short
+  register: docker_compose_check
+  changed_when: false
+  failed_when: false
+
+- name: Install Docker Engine and the Compose plugin
+  when: docker_compose_check.rc != 0 or docker_force_install
+  block:
+    - name: Install apt prerequisites
+      ansible.builtin.apt:
+        name:
+          - ca-certificates
+          - curl
+          - python3-debian
+        state: present
+        update_cache: true
+
+    - name: Create the apt keyrings directory
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: "0755"
+
+    - name: Add Docker's apt signing key
+      ansible.builtin.get_url:
+        url: "https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg"
+        dest: /etc/apt/keyrings/docker.asc
+        mode: "0644"
+
+    - name: Add Docker's apt repository
+      ansible.builtin.deb822_repository:
+        name: docker
+        types: deb
+        uris: "https://download.docker.com/linux/{{ ansible_distribution | lower }}"
+        suites: "{{ ansible_distribution_release }}"
+        components: stable
+        architectures: "{{ docker_apt_arch_map[ansible_architecture] }}"
+        signed_by: /etc/apt/keyrings/docker.asc
+
+    - name: Install Docker packages
+      ansible.builtin.apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+        state: present
+        update_cache: true
+
+- name: Ensure the Docker service is enabled and running
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: true
+
+- name: Read the Docker Compose version
+  ansible.builtin.command: docker compose version --short
+  register: docker_compose_version
+  changed_when: false
+
+- name: Check Compose is new enough for docker_compose_v2
+  ansible.builtin.assert:
+    that:
+      - docker_compose_version.stdout | trim | regex_replace('^v', '') is version(docker_min_compose_version, '>=')
+    fail_msg: >-
+      Docker Compose {{ docker_compose_version.stdout | trim }} is older than
+      {{ docker_min_compose_version }}.

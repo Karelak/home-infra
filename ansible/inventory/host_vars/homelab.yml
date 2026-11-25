@@ -1,0 +1,8 @@
+# Stacks deployed to this host (folders under stacks/). Verify before use.
+stacks_enabled:
+  - qbittorrent
+  - watchtower
+
+# See host_vars/vps.yml for what these two do.
+stacks_project_names: {}
+stacks_env: {}

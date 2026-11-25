@@ -1,0 +1,15 @@
+# Stacks to deploy on this host (set per host in host_vars).
+stacks_enabled: []
+
+# Optional overrides: stack folder name -> Compose project name.
+stacks_project_names: {}
+
+# Optional per-stack .env contents: stack folder name -> {KEY: value}.
+stacks_env: {}
+
+# Pull policy for images. Watchtower owns image updates, so only pull what is
+# missing. Use `always` for a deliberate update.
+stacks_pull: missing
+
+# Deploy just one stack: ansible-playbook site.yml -e stacks_only=vaultwarden
+# stacks_only: vaultwarden
