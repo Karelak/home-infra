@@ -1,0 +1,5 @@
+# Where compose files are placed on each host.
+stacks_dir: /opt/stacks
+
+# Where compose files live in this repo (relative to ansible/).
+stacks_src: "{{ playbook_dir }}/../stacks"

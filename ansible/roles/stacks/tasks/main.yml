@@ -1,0 +1,57 @@
+- name: Work out which stacks to deploy
+  ansible.builtin.set_fact:
+    stacks_selected: "{{ [stacks_only] if stacks_only is defined else stacks_enabled }}"
+
+- name: Check each stack has a compose file in the repo
+  ansible.builtin.stat:
+    path: "{{ stacks_src }}/{{ item }}/docker-compose.yml"
+  register: stacks_repo_files
+  loop: "{{ stacks_selected }}"
+  delegate_to: localhost
+  become: false
+
+- name: Fail on stacks that are missing from the repo
+  ansible.builtin.assert:
+    that: item.stat.exists
+    fail_msg: "stacks/{{ item.item }}/docker-compose.yml does not exist"
+    quiet: true
+  loop: "{{ stacks_repo_files.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+
+- name: Create stack directories
+  ansible.builtin.file:
+    path: "{{ stacks_dir }}/{{ item }}"
+    state: directory
+    mode: "0755"
+  loop: "{{ stacks_selected }}"
+
+- name: Copy compose files
+  ansible.builtin.copy:
+    src: "{{ stacks_src }}/{{ item }}/docker-compose.yml"
+    dest: "{{ stacks_dir }}/{{ item }}/docker-compose.yml"
+    mode: "0644"
+  loop: "{{ stacks_selected }}"
+
+- name: Write .env files
+  ansible.builtin.copy:
+    content: |
+      {% for key, value in stacks_env[item].items() %}
+      {{ key }}='{{ value }}'
+      {% endfor %}
+    dest: "{{ stacks_dir }}/{{ item }}/.env"
+    mode: "0600"
+  loop: "{{ stacks_selected }}"
+  when: item in stacks_env
+  no_log: true
+
+- name: Deploy stacks
+  community.docker.docker_compose_v2:
+    project_src: "{{ stacks_dir }}/{{ item }}"
+    project_name: "{{ stacks_project_names[item] | default(item) }}"
+    files:
+      - docker-compose.yml
+    state: present
+    pull: "{{ stacks_pull }}"
+    remove_orphans: false
+  loop: "{{ stacks_selected }}"

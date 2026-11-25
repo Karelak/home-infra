@@ -1,0 +1,13 @@
+- name: Docker engine
+  hosts: docker_hosts
+  become: true
+  roles:
+    - role: docker
+      tags: [docker]
+
+- name: Compose stacks
+  hosts: docker_hosts
+  become: true
+  roles:
+    - role: stacks
+      tags: [stacks]

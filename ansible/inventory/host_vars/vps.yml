@@ -1,0 +1,20 @@
+# Stacks deployed to this host (folders under stacks/). Verify against what
+# actually runs here before the first real run.
+stacks_enabled:
+  - nginx-proxy-manager
+  - wg-easy
+  - vaultwarden
+  - n8n
+  - actual-budget
+  - jackett
+  - sanser
+  - factorio
+  - watchtower
+
+# Must match the Compose project name each stack already runs under, or
+# Compose creates new, empty named volumes. Check with `docker compose ls`.
+# Stacks not listed here use their folder name.
+stacks_project_names: {}
+
+# Per-stack .env contents (secrets). Keep real values encrypted, not here.
+stacks_env: {}

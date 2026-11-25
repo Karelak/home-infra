@@ -1,0 +1,24 @@
+services:
+  factorio:
+    environment:
+      DLC_SPACE_AGE: true
+      TOKEN: "${TOKEN}"
+      UPDATE_MODS_ON_START: true
+      USERNAME: "${USERNAME}"
+    healthcheck:
+      interval: "1m30s"
+      retries: 5
+      start_period: "30s"
+      test:
+        - "CMD"
+        - "rcon"
+        - "/players"
+      timeout: "30s"
+    image: "factoriotools/factorio:2.0.77"
+    ports:
+      - "34197:34197/udp"
+    restart: "unless-stopped"
+    volumes:
+      - "factorio:/factorio"
+volumes:
+  factorio: null

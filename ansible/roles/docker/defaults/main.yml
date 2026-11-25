@@ -1,0 +1,11 @@
+# The role skips installation when `docker compose` already works, so it is
+# safe to run against a host that already has Docker. Set to true to install
+# from Docker's apt repository regardless.
+docker_force_install: false
+
+# community.docker.docker_compose_v2 needs Compose 2.18.0 or newer.
+docker_min_compose_version: "2.18.0"
+
+docker_apt_arch_map:
+  x86_64: amd64
+  aarch64: arm64
