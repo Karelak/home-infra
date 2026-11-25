@@ -2,4 +2,7 @@
 
 removed {
   from = oci_bastion_bastion.bastion
+  lifecycle {
+    destroy = true
+  }
 }
