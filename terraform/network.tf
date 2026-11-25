@@ -5,27 +5,24 @@ resource "oci_core_vcn" "vcn" {
   cidr_blocks    = ["10.0.0.0/16"]
 }
 
-resource "oci_core_internet_gateway" "internet_gateway_vcn" {
+resource "oci_core_internet_gateway" "igw" {
   compartment_id = var.compartment_ocid
   display_name   = "vps-igw"
-  enabled        = true
   vcn_id         = oci_core_vcn.vcn.id
 }
 
 resource "oci_core_subnet" "subnet" {
-  compartment_id             = var.compartment_ocid
-  vcn_id                     = oci_core_vcn.vcn.id
-  display_name               = "vps-subnet"
-  dns_label                  = "subnet12241612"
-  cidr_block                 = "10.0.0.0/24"
-  dhcp_options_id            = oci_core_vcn.vcn.default_dhcp_options_id
-  route_table_id             = oci_core_vcn.vcn.default_route_table_id
-  security_list_ids          = [oci_core_vcn.vcn.default_security_list_id]
-  prohibit_internet_ingress  = false
-  prohibit_public_ip_on_vnic = false
+  compartment_id    = var.compartment_ocid
+  vcn_id            = oci_core_vcn.vcn.id
+  display_name      = "vps-subnet"
+  dns_label         = "subnet12241612"
+  cidr_block        = "10.0.0.0/24"
+  dhcp_options_id   = oci_core_vcn.vcn.default_dhcp_options_id
+  route_table_id    = oci_core_vcn.vcn.default_route_table_id
+  security_list_ids = [oci_core_vcn.vcn.default_security_list_id]
 }
 
-resource "oci_core_default_dhcp_options" "default_dhcp_options_for_vcn" {
+resource "oci_core_default_dhcp_options" "default_dhcp" {
   compartment_id             = var.compartment_ocid
   display_name               = "vps-dhcp"
   domain_name_type           = "CUSTOM_DOMAIN"
@@ -42,7 +39,7 @@ resource "oci_core_default_dhcp_options" "default_dhcp_options_for_vcn" {
   }
 }
 
-resource "oci_core_default_route_table" "default_route_table_for_vcn" {
+resource "oci_core_default_route_table" "default_route_table" {
   compartment_id             = var.compartment_ocid
   display_name               = "vps-rt"
   manage_default_resource_id = oci_core_vcn.vcn.default_route_table_id
@@ -50,7 +47,7 @@ resource "oci_core_default_route_table" "default_route_table_for_vcn" {
   route_rules {
     destination       = "0.0.0.0/0"
     destination_type  = "CIDR_BLOCK"
-    network_entity_id = oci_core_internet_gateway.internet_gateway_vcn.id
+    network_entity_id = oci_core_internet_gateway.igw.id
     route_type        = "STATIC"
   }
 }
@@ -71,7 +68,7 @@ locals {
   ]
 }
 
-resource "oci_core_default_security_list" "default_security_list_for_vcn" {
+resource "oci_core_default_security_list" "default_security_list" {
   compartment_id             = var.compartment_ocid
   display_name               = "vps-seclist"
   manage_default_resource_id = oci_core_vcn.vcn.default_security_list_id
