@@ -16,9 +16,9 @@ resource "oci_core_instance" "vps" {
   state               = "RUNNING"
 
   shape_config {
-    ocpus                     = 2
-    memory_in_gbs             = 12
-    baseline_ocpu_utilization = "BASELINE_1_1"
+    ocpus         = 2
+    memory_in_gbs = 12
+
   }
 
   source_details {
