@@ -79,7 +79,6 @@ services:
       - "vaultwarden"
     ports:
       - "83:80"
-      - "587:587"
     restart: "unless-stopped"
     volumes:
       - "vaultwarden:/data"
