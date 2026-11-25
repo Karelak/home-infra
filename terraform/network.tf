@@ -55,8 +55,22 @@ resource "oci_core_default_route_table" "default_route_table_for_vcn" {
   }
 }
 
-# NOTE: currently allows ALL protocols from the whole internet.
-# Restrict to the ports the VPS actually exposes once they're known.
+# Mirrors the host's ufw allow-list so the cloud firewall is a second layer.
+# Anything not listed here is dropped before it reaches the VPS, including
+# ports Docker publishes that ufw doesn't see.
+locals {
+  public_tcp_ports = [
+    22,   # ssh
+    80,   # http
+    443,  # https
+    8000, # app
+  ]
+  public_udp_ports = [
+    51820, # wireguard
+    34197, # factorio
+  ]
+}
+
 resource "oci_core_default_security_list" "default_security_list_for_vcn" {
   compartment_id             = var.compartment_ocid
   display_name               = "Default Security List for vcn-20251224-1610"
@@ -69,10 +83,65 @@ resource "oci_core_default_security_list" "default_security_list_for_vcn" {
     stateless        = false
   }
 
+  dynamic "ingress_security_rules" {
+    for_each = toset(local.public_tcp_ports)
+    content {
+      protocol    = "6"
+      source      = "0.0.0.0/0"
+      source_type = "CIDR_BLOCK"
+      stateless   = false
+      tcp_options {
+        min = ingress_security_rules.value
+        max = ingress_security_rules.value
+      }
+    }
+  }
+
+  dynamic "ingress_security_rules" {
+    for_each = toset(local.public_udp_ports)
+    content {
+      protocol    = "17"
+      source      = "0.0.0.0/0"
+      source_type = "CIDR_BLOCK"
+      stateless   = false
+      udp_options {
+        min = ingress_security_rules.value
+        max = ingress_security_rules.value
+      }
+    }
+  }
+
+  # mosh
   ingress_security_rules {
+    protocol    = "17"
     source      = "0.0.0.0/0"
     source_type = "CIDR_BLOCK"
-    protocol    = "all"
     stateless   = false
+    udp_options {
+      min = 60000
+      max = 61000
+    }
+  }
+
+  # Path MTU discovery
+  ingress_security_rules {
+    protocol    = "1"
+    source      = "0.0.0.0/0"
+    source_type = "CIDR_BLOCK"
+    stateless   = false
+    icmp_options {
+      type = 3
+      code = 4
+    }
+  }
+
+  ingress_security_rules {
+    protocol    = "1"
+    source      = oci_core_vcn.vcn.cidr_blocks[0]
+    source_type = "CIDR_BLOCK"
+    stateless   = false
+    icmp_options {
+      type = 3
+    }
   }
 }
