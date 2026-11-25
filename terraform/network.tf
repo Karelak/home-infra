@@ -22,23 +22,6 @@ resource "oci_core_subnet" "subnet" {
   security_list_ids = [oci_core_vcn.vcn.default_security_list_id]
 }
 
-resource "oci_core_default_dhcp_options" "default_dhcp" {
-  compartment_id             = var.compartment_ocid
-  display_name               = "vps-dhcp"
-  domain_name_type           = "CUSTOM_DOMAIN"
-  manage_default_resource_id = oci_core_vcn.vcn.default_dhcp_options_id
-
-  options {
-    type        = "DomainNameServer"
-    server_type = "VcnLocalPlusInternet"
-  }
-
-  options {
-    type                = "SearchDomain"
-    search_domain_names = ["vcn12241612.oraclevcn.com"]
-  }
-}
-
 resource "oci_core_default_route_table" "default_route_table" {
   compartment_id             = var.compartment_ocid
   display_name               = "vps-rt"
