@@ -142,53 +142,13 @@ resource "oci_core_instance" "vps" {
     are_all_plugins_disabled = "false"
     is_management_disabled   = "false"
     is_monitoring_disabled   = "false"
-    plugins_config {
-      desired_state = "DISABLED"
-      name          = "Vulnerability Scanning"
-    }
-    plugins_config {
-      desired_state = "DISABLED"
-      name          = "Management Agent"
-    }
-    plugins_config {
-      desired_state = "ENABLED"
-      name          = "Custom Logs Monitoring"
-    }
-    plugins_config {
-      desired_state = "DISABLED"
-      name          = "Compute RDMA GPU Monitoring"
-    }
-    plugins_config {
-      desired_state = "ENABLED"
-      name          = "Compute Instance Monitoring"
-    }
-    plugins_config {
-      desired_state = "DISABLED"
-      name          = "Compute HPC RDMA Auto-Configuration"
-    }
-    plugins_config {
-      desired_state = "DISABLED"
-      name          = "Compute HPC RDMA Authentication"
-    }
-    plugins_config {
-      desired_state = "ENABLED"
-      name          = "Cloud Guard Workload Protection"
-    }
-    plugins_config {
-      desired_state = "DISABLED"
-      name          = "Block Volume Management"
-    }
-    plugins_config {
-      desired_state = "DISABLED"
-      name          = "Bastion"
-    }
   }
 
   availability_config {
 
     recovery_action = "RESTORE_INSTANCE"
   }
-  availability_domain = var.availability_domain--NHmJ-UK-LONDON-1-AD-1
+  availability_domain = var.availability_domain
 
 
   compartment_id = var.compartment_ocid
@@ -216,7 +176,6 @@ resource "oci_core_instance" "vps" {
   display_name = "vps"
   extended_metadata = {
   }
-  fault_domain = var.fault_domain--FAULT-DOMAIN-1
   freeform_tags = {
   }
 

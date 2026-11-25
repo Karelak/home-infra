@@ -14,17 +14,9 @@ variable "user_ocid" {
   type    = string
   default = "ocid1.user.oc1..aaaaaaaa7lkrf6xlv5iexmyizitnez5uocolzglcqf3zefvhdqcgqj6ixtqq"
 }
-variable "availability_domain--NHmJ-UK-LONDON-1-AD-1" {
+variable "availability_domain" {
   type    = string
   default = "NHmJ:UK-LONDON-1-AD-1"
-}
-variable "availability_domain--NHmJ-UK-LONDON-1-AD-3" {
-  type    = string
-  default = "NHmJ:UK-LONDON-1-AD-3"
-}
-variable "fault_domain--FAULT-DOMAIN-1" {
-  type    = string
-  default = "FAULT-DOMAIN-1"
 }
 variable "region" {
   type    = string
