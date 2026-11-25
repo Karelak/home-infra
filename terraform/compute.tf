@@ -18,7 +18,6 @@ resource "oci_core_instance" "vps" {
   shape_config {
     ocpus         = 2
     memory_in_gbs = 12
-
   }
 
   source_details {
@@ -27,35 +26,11 @@ resource "oci_core_instance" "vps" {
   }
 
   create_vnic_details {
-    display_name           = "vnic"
-    hostname_label         = "vnic"
-    subnet_id              = oci_core_subnet.subnet.id
-    private_ip             = "10.0.0.155"
-    assign_public_ip       = true
-    skip_source_dest_check = false
-  }
-
-  agent_config {
-    are_all_plugins_disabled = false
-    is_management_disabled   = false
-    is_monitoring_disabled   = false
-  }
-
-  availability_config {
-    recovery_action = "RESTORE_INSTANCE"
-  }
-
-  instance_options {
-    are_legacy_imds_endpoints_disabled = false
-  }
-
-  launch_options {
-    boot_volume_type                    = "PARAVIRTUALIZED"
-    firmware                            = "UEFI_64"
-    is_consistent_volume_naming_enabled = true
-    is_pv_encryption_in_transit_enabled = true
-    network_type                        = "PARAVIRTUALIZED"
-    remote_data_volume_type             = "PARAVIRTUALIZED"
+    display_name     = "vnic"
+    hostname_label   = "vnic"
+    subnet_id        = oci_core_subnet.subnet.id
+    private_ip       = "10.0.0.155"
+    assign_public_ip = true
   }
 
   metadata = {

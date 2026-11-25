@@ -8,21 +8,18 @@ resource "oci_core_vcn" "vcn" {
 resource "oci_core_internet_gateway" "internet_gateway_vcn" {
   compartment_id = var.compartment_ocid
   display_name   = "vps-igw"
-  enabled        = true
   vcn_id         = oci_core_vcn.vcn.id
 }
 
 resource "oci_core_subnet" "subnet" {
-  compartment_id             = var.compartment_ocid
-  vcn_id                     = oci_core_vcn.vcn.id
-  display_name               = "vps-subnet"
-  dns_label                  = "subnet12241612"
-  cidr_block                 = "10.0.0.0/24"
-  dhcp_options_id            = oci_core_vcn.vcn.default_dhcp_options_id
-  route_table_id             = oci_core_vcn.vcn.default_route_table_id
-  security_list_ids          = [oci_core_vcn.vcn.default_security_list_id]
-  prohibit_internet_ingress  = false
-  prohibit_public_ip_on_vnic = false
+  compartment_id    = var.compartment_ocid
+  vcn_id            = oci_core_vcn.vcn.id
+  display_name      = "vps-subnet"
+  dns_label         = "subnet12241612"
+  cidr_block        = "10.0.0.0/24"
+  dhcp_options_id   = oci_core_vcn.vcn.default_dhcp_options_id
+  route_table_id    = oci_core_vcn.vcn.default_route_table_id
+  security_list_ids = [oci_core_vcn.vcn.default_security_list_id]
 }
 
 resource "oci_core_default_dhcp_options" "default_dhcp_options_for_vcn" {
