@@ -2,12 +2,8 @@
 
 resource "oci_core_subnet" "subnet" {
   #availability_domain = <<Optional value not found in discovery>>
-  cidr_block     = "10.0.0.0/24"
-  compartment_id = var.compartment_ocid
-  defined_tags = {
-    "Oracle-Tags.CreatedBy" = "default/partkaarel2@gmail.com"
-    "Oracle-Tags.CreatedOn" = "2025-12-24T14:12:29.451Z"
-  }
+  cidr_block      = "10.0.0.0/24"
+  compartment_id  = var.compartment_ocid
   dhcp_options_id = oci_core_vcn.vcn.default_dhcp_options_id
   display_name    = "subnet-20251224-1610"
   dns_label       = "subnet12241612"
@@ -30,12 +26,8 @@ resource "oci_core_subnet" "subnet" {
 
 resource "oci_core_internet_gateway" "internet_gateway_vcn" {
   compartment_id = var.compartment_ocid
-  defined_tags = {
-    "Oracle-Tags.CreatedBy" = "default/partkaarel2@gmail.com"
-    "Oracle-Tags.CreatedOn" = "2025-12-24T14:12:28.180Z"
-  }
-  display_name = "Internet Gateway vcn-20251224-1610"
-  enabled      = "true"
+  display_name   = "Internet Gateway vcn-20251224-1610"
+  enabled        = "true"
   freeform_tags = {
   }
   #route_table_id = <<Optional value not found in discovery>>
@@ -49,12 +41,8 @@ resource "oci_core_vcn" "vcn" {
     "10.0.0.0/16",
   ]
   compartment_id = var.compartment_ocid
-  defined_tags = {
-    "Oracle-Tags.CreatedBy" = "default/partkaarel2@gmail.com"
-    "Oracle-Tags.CreatedOn" = "2025-12-24T14:12:27.231Z"
-  }
-  display_name = "vcn-20251224-1610"
-  dns_label    = "vcn12241612"
+  display_name   = "vcn-20251224-1610"
+  dns_label      = "vcn12241612"
   freeform_tags = {
   }
   ipv6private_cidr_blocks = [
@@ -67,11 +55,7 @@ resource "oci_core_vcn" "vcn" {
 
 resource "oci_core_public_ip" "vps_public_ip" {
   compartment_id = var.compartment_ocid
-  defined_tags = {
-    "Oracle-Tags.CreatedBy" = "default/partkaarel2@gmail.com"
-    "Oracle-Tags.CreatedOn" = "2025-12-24T14:14:18.352Z"
-  }
-  display_name = "vps-public-ip"
+  display_name   = "vps-public-ip"
   freeform_tags = {
   }
   lifetime = "RESERVED"
@@ -80,11 +64,7 @@ resource "oci_core_public_ip" "vps_public_ip" {
 }
 
 resource "oci_core_default_dhcp_options" "default_dhcp_options_for_vcn" {
-  compartment_id = var.compartment_ocid
-  defined_tags = {
-    "Oracle-Tags.CreatedBy" = "default/partkaarel2@gmail.com"
-    "Oracle-Tags.CreatedOn" = "2025-12-24T14:12:27.231Z"
-  }
+  compartment_id   = var.compartment_ocid
   display_name     = "Default DHCP Options for vcn-20251224-1610"
   domain_name_type = "CUSTOM_DOMAIN"
   freeform_tags = {
@@ -109,11 +89,7 @@ resource "oci_core_default_dhcp_options" "default_dhcp_options_for_vcn" {
 
 resource "oci_core_default_route_table" "default_route_table_for_vcn" {
   compartment_id = var.compartment_ocid
-  defined_tags = {
-    "Oracle-Tags.CreatedBy" = "default/partkaarel2@gmail.com"
-    "Oracle-Tags.CreatedOn" = "2025-12-24T14:12:27.231Z"
-  }
-  display_name = "Default Route Table for vcn-20251224-1610"
+  display_name   = "Default Route Table for vcn-20251224-1610"
   freeform_tags = {
   }
   manage_default_resource_id = oci_core_vcn.vcn.default_route_table_id
@@ -128,11 +104,7 @@ resource "oci_core_default_route_table" "default_route_table_for_vcn" {
 
 resource "oci_core_default_security_list" "default_security_list_for_vcn" {
   compartment_id = var.compartment_ocid
-  defined_tags = {
-    "Oracle-Tags.CreatedBy" = "default/partkaarel2@gmail.com"
-    "Oracle-Tags.CreatedOn" = "2025-12-24T14:12:27.231Z"
-  }
-  display_name = "Default Security List for vcn-20251224-1610"
+  display_name   = "Default Security List for vcn-20251224-1610"
   egress_security_rules {
     #description = <<Optional value not found in discovery>>
     destination      = "0.0.0.0/0"
@@ -225,11 +197,7 @@ resource "oci_core_instance" "vps" {
     #assign_ipv6ip = <<Optional value not found in discovery>>
     #assign_private_dns_record = <<Optional value not found in discovery>>
     assign_public_ip = "true"
-    defined_tags = {
-      "Oracle-Tags.CreatedBy" = "default/partkaarel2@gmail.com"
-      "Oracle-Tags.CreatedOn" = "2026-01-23T19:52:06.060Z"
-    }
-    display_name = "vnic"
+    display_name     = "vnic"
     freeform_tags = {
     }
     hostname_label = "vnic"
@@ -245,10 +213,6 @@ resource "oci_core_instance" "vps" {
     #vlan_id = <<Optional value not found in discovery>>
   }
   #dedicated_vm_host_id = <<Optional value not found in discovery>>
-  defined_tags = {
-    "Oracle-Tags.CreatedBy" = "default/partkaarel2@gmail.com"
-    "Oracle-Tags.CreatedOn" = "2026-01-23T19:52:05.928Z"
-  }
   display_name = "vps"
   extended_metadata = {
   }
